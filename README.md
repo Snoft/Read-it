@@ -14,45 +14,29 @@ python evals/review.py bryter   # extraction next to its label, field by field
 ```
 
 Built in a week with Claude as a pair — see *How this was built* below for
-who did what. It runs on the command line, it is not deployed, and the sections
-below say plainly what it does and does not do.
+who did what. It runs on command line, further info on the sections below.
 
 ## Why every value carries its source
 
-An investor should not have to trust a model's output; they should be able to
-check it in two seconds. Every extracted value carries the page number and the
-verbatim sentence it came from. A value that cannot be traced back to the page
-is counted as a hallucination by the eval below, and **absent is a valid,
-useful answer** — reported as such rather than filled in.
+As hallucinations are not fully avoidable (yet), sources were added to the model's outputs. 
+Every value carries the page number and the sentence it came from. Untraceable values will
+be counted as hallucinations and absent values seens as valid useful answers.
 
-That design paid for itself while building it. When the extractor reported
-Rokoko's stage as "Series B", the attached quote — *"2023 → Series B $25M"* —
-showed instantly that it had read a roadmap slide of rounds the company planned
-to raise later, not the $3M strategic round it was actually asking for. Without
-provenance that would have been an unexplained wrong answer.
+This design proves to be highly valuable, e.g. when the tool reported a decks stage as "Series B"
+with the attached quote "2023 → Series B $25M" it was instantly clear the tool made an outdated error.
+This can be fixed by further rules and tests on those sources. 
 
 ## Three values, not two
 
-Metrics carry a `status` of `stated`, `redacted` or `absent`, because those
-mean different things to a reader. A deck that never mentions revenue may not
-have any. A deck whose revenue slide is blacked out — Rokoko's is — has the
-number and is withholding it, and the right next action is *ask for the
-unredacted version*, not *pass*. Collapsing both into null loses that.
+Metrics carry a `status` of `stated`, `redacted` or `absent`. This has become necessary as many decks are 
+atypical with censoured, absent or as redacted marked values. This proved to improve results with such decks
+dramatically. 
 
 ## What it flags
 
-Extraction is a commodity. *"There is no revenue figure anywhere in 23 slides"*
-is the sentence that saves a reader ten minutes.
+For now only simple flags e.g. *"There is no revenue figure anywhere in 23 slides"*
+To avoid false positives (flags) it is kept simple and not too strict. Work in progress. 
 
-Currently implemented: **missing fields** — something the thesis needs that the
-deck never states. Precision is preferred over recall on purpose: one wrong flag
-costs more trust than three missed ones.
-
-Not implemented, and deliberately so rather than by omission: **contradiction
-detection**. Three decks in the set contradict themselves — Wunderlist claims
-500k daily active users on one slide and 450k on another — so the test cases
-exist. It was cut because doing it badly is worse than not doing it, and
-false positives here destroy trust in the whole column.
 
 ## Quality
 
@@ -72,35 +56,12 @@ python evals/run_eval.py --model claude-haiku-4-5-20251001   # comparison run
 be checked** against a page with a text layer and 33 could not (see below).
 
 **The comparison has a clear answer, and it is not about accuracy.** Haiku is a
-fraction of the price and scores five points lower on fields, which on its own
-would be a reasonable trade. It hallucinates 67% more, which is worse. But the
-disqualifying part is *how* it fails: it misreads proper nouns off images.
-On one Bryter slide it returned `Michael Höbl` for Hübl, `Mike Chaifen` for
-Chalfen, `Michael Mitterdorfer` for Mitterlehner, and `Cavalry` for Cavalry
-Ventures. On Rokoko it found 8 of 16 customer logos; sonnet found all 16. For a
-tool whose entire output is the names of investors and customers, a model that
-quietly garbles names is unusable at any price. **Run this on sonnet.**
+fraction of the price and scores five points lower on fieldsand hallucinates 67% more. 
+It misreads proper nouns off images and doesn't find the logos.
+On Rokoko it found 8 of 16 customer logos; sonnet found all 16.
+**Run this on sonnet or better.**
 
-### What this number does and does not mean
-
-The answer key was drafted by a larger model reading the decks without a schema
-and without time pressure, then reviewed and corrected by hand. So it measures
-*agreement between a constrained extractor and an unconstrained one, filtered
-through a human*, not correctness against ground truth.
-
-Reviewing mattered. Labelling a deck by hand turned up flags in the drafted set
-that were too aggressive to keep, and one label was outright wrong: `langfuse`
-had `round_size` set to the $4M **total raised to date**, which is not the round
-being raised. The extractor returned null, correctly, because of a rule about
-funding-history slides — so a prompt rule caught an error in its own answer key.
-The label is corrected and the reason recorded in its notes.
-
-Free text (`one_liner`) is excluded from the accuracy count: two correct
-one-line descriptions of the same company rarely match as strings. Names are
-compared with accents folded, because a label typed as "Sondergaard" should not
-mark "Søndergaard" wrong.
-
-### Where the 26% of missed fields actually went
+### What made claude sonnet 5 only 0.737 accurate?
 
 Eight misses on the sonnet run, and only one is an extraction fault:
 
@@ -119,22 +80,18 @@ Eight misses on the sonnet run, and only one is an extraction fault:
 - **One is a true miss.** Sonnet returned null for hypt's location; haiku found
   "Switzerland" on the same slide.
 
-### The hallucination rate is honest but thin
+  Most of these are discussable ambigous results and a further notice about it's ambigouity
+  could fix part of the problem.
 
-Only 13 of 46 returned values sit on a page with a text layer. Pitch decks are
-almost entirely graphics, so **72% of the provenance in this run cannot be
-verified by the harness at all** — not because the quotes are wrong, but because
-there is no machine-readable text to compare them against.
+### Where the hallucination rate comes from
 
-This was not obvious. An earlier version of the harness counted every
-unverifiable quote as a hallucination and reported a rate of 92%. The number was
-meaningless, and the fix was to separate "wrong" from "cannot tell" rather than
-to let a scary figure stand. Making quotes checkable on image pages needs OCR,
-and that is the next real piece of work on this project.
+Pitch decks are almost entirely graphics, so **72% of the provenance in this run cannot be
+verified by the harness at all**. As most of the decks simply need OCR and cannot be read as
+normal text more is marked as hallucination than what's actually the case.
 
-## What eight real decks taught me
+## Problems that come up with many decks
 
-- **Filenames lie.** Juno's deck is called `Juno_s_4M_pitch_deck...` and never
+- **Filenames dont represent.** Juno's deck is called `Juno_s_4M_pitch_deck...` and never
   states a round size anywhere inside. langfuse's filename carries a date the
   deck does not. The prompt now says the filename is not part of the document.
 - **Decks do not date themselves.** One of eight carries a date (Rokoko, in a
@@ -170,9 +127,6 @@ office rather than a generic deck parser:**
   to return null.
 - Catching that the drafted labels flagged contradictions too aggressively, and
   that `sector` was conflating business model with industry.
-
-I understand every line in this repository and can defend each design decision,
-which is the bar I held myself to. What I cannot claim is having typed it all.
 
 ## Design notes
 
