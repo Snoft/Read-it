@@ -1,0 +1,137 @@
+{
+  "model": "claude-haiku-4-5-20251001",
+  "summary": {
+    "decks": 8,
+    "fields_present": 38,
+    "field_accuracy": 0.684,
+    "fields_with_value": 49,
+    "quotes_checkable": 13,
+    "quotes_unverifiable": 36,
+    "hallucination_rate": 0.385,
+    "hallucinated_fields": 5,
+    "flag_recall": 0.488
+  },
+  "per_deck": [
+    {
+      "deck": "DACH/Bryter-Pitch-Deck.pdf",
+      "correct": 2,
+      "present": 4,
+      "wrong": [
+        "founders: got ['Michael Grupp', 'Dr. Micha-Manuel Bues', 'Michael Höbl'], label ['Michael Grupp', 'Micha-Manuel Bues', 'Michael Hübl']",
+        "investors: got ['Accel', 'NOTION', 'Cavalry', 'Mike Chaifen', 'Charles Songhurst', 'Mirko Novakovic', 'Michael Mitterdorfer'], label ['Accel', 'Notion', 'Cavalry Ventures', 'Mike Chalfen', 'Charles Songhurst', 'Mirko Novakovic', 'Michael Mitterlehner']"
+      ],
+      "hallucinated": [],
+      "valued": 5,
+      "checkable": 0,
+      "unverifiable": 5,
+      "flags_expected": 5,
+      "flags_found": 4
+    },
+    {
+      "deck": "Heal.pdf",
+      "correct": 4,
+      "present": 5,
+      "wrong": [
+        "investors: got [], label ['Paul Jacobs']"
+      ],
+      "hallucinated": [],
+      "valued": 5,
+      "checkable": 0,
+      "unverifiable": 5,
+      "flags_expected": 6,
+      "flags_found": 3
+    },
+    {
+      "deck": "DACH/PitchDeck_hypt.pdf",
+      "correct": 4,
+      "present": 9,
+      "wrong": [
+        "sector: got 'saas', label 'b2b saas'",
+        "stage: got 'seed extension', label 'seed extension round'",
+        "location: got 'Switzerland', label 'DACH switzerland'",
+        "founders: got ['Pascal Sollberger', 'Tobias Wegmüller', 'Roger Ellenberger'], label ['Tobias Wegmüller (Co-CEO)', 'Pascal Sollberger (Co-CEO)', 'Roger Ellenberger (CTO)']",
+        "investors: got [], label ['Venpace', 'SixThirty', 'Core Angels', 'Gateway Ventures', 'SICTIC', 'NCA', 'Swisspreneur']"
+      ],
+      "hallucinated": [
+        "founders",
+        "revenue",
+        "growth",
+        "users",
+        "competitors"
+      ],
+      "valued": 11,
+      "checkable": 9,
+      "unverifiable": 2,
+      "flags_expected": 2,
+      "flags_found": 0
+    },
+    {
+      "deck": "Juno_s_4M_pitch_deck_for_employee_wellness_benefits.pdf",
+      "correct": 2,
+      "present": 3,
+      "wrong": [
+        "sector: got 'saas', label 'marketplace'"
+      ],
+      "hallucinated": [],
+      "valued": 5,
+      "checkable": 0,
+      "unverifiable": 5,
+      "flags_expected": 6,
+      "flags_found": 4
+    },
+    {
+      "deck": "DACH/langfuse_overview_oct_25_24.pdf",
+      "correct": 3,
+      "present": 3,
+      "wrong": [],
+      "hallucinated": [],
+      "valued": 4,
+      "checkable": 4,
+      "unverifiable": 0,
+      "flags_expected": 6,
+      "flags_found": 4
+    },
+    {
+      "deck": "Rokoko_pitch_deck_80M_motion_capture_tech.pdf",
+      "correct": 8,
+      "present": 10,
+      "wrong": [
+        "sector: got 'saas', label 'deeptech'",
+        "customers: got ['Airbus', 'Sony', 'Microsoft', 'Meta', 'Netflix', 'Snap Inc.', 'Yale', 'Disney'], label ['Tesla', 'Volkswagen', 'Mercedes-Benz', 'BMW', 'Ford', 'Airbus', 'Sony', 'Adobe', 'Microsoft', 'Meta', 'Netflix', 'Snap Inc.', 'Twitch', 'Yale', 'Disney', 'Copenhagen Municipality']"
+      ],
+      "hallucinated": [],
+      "valued": 11,
+      "checkable": 0,
+      "unverifiable": 11,
+      "flags_expected": 6,
+      "flags_found": 0
+    },
+    {
+      "deck": "Tinder_Pitch_Deck.pdf",
+      "correct": 1,
+      "present": 1,
+      "wrong": [],
+      "hallucinated": [],
+      "valued": 3,
+      "checkable": 0,
+      "unverifiable": 3,
+      "flags_expected": 6,
+      "flags_found": 2
+    },
+    {
+      "deck": "DACH/Wunderlist-pitch-deck.pdf",
+      "correct": 2,
+      "present": 3,
+      "wrong": [
+        "sector: got 'saas', label 'consumer'"
+      ],
+      "hallucinated": [],
+      "valued": 5,
+      "checkable": 0,
+      "unverifiable": 5,
+      "flags_expected": 6,
+      "flags_found": 4
+    }
+  ],
+  "failures": []
+}

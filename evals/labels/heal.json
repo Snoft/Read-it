@@ -1,0 +1,122 @@
+{
+  "_deck": "Heal.pdf",
+  "_source": "public deck, collected 13 Sep 2026",
+  "_labelled_by": "santino",
+  "_notes": "23 pages. A payer/partner-facing sales deck rather than a fundraise: clinical outcomes, press quotes, a large payer logo wall, service markets and a team page. Rich in outcome percentages, empty on company financials - no revenue, no round, no stage, no HQ. The only investor the deck names is Paul Jacobs, labelled 'Chairman & Founding Investor' on the team slide (p23); the other board members are not stated to have invested, and the deck states no date of its own (the footer carries only a 2020 copyright line).",
+  "company": "Heal",
+  "fields": {
+    "one_liner": {
+      "value": "Home-centric primary care proven to improve outcomes, delight patients and lower healthcare costs"
+    },
+    "sector": {
+      "value": "healthtech"
+    },
+    "stage": {
+      "value": null
+    },
+    "location": {
+      "value": null
+    },
+    "founders": {
+      "value": [
+        "Renee Dua"
+      ]
+    },
+    "revenue": {
+      "value": null,
+      "unit": null,
+      "period": null,
+      "as_of": null
+    },
+    "growth": {
+      "value": null,
+      "unit": null,
+      "period": null,
+      "as_of": null
+    },
+    "users": {
+      "value": 200000,
+      "unit": "house calls and telehealth visits delivered",
+      "period": "cumulative",
+      "as_of": null
+    },
+    "round_size": {
+      "value": null,
+      "unit": null,
+      "period": null,
+      "as_of": null
+    },
+    "valuation": {
+      "value": null,
+      "unit": null,
+      "period": null,
+      "as_of": null
+    },
+    "customers": {
+      "value": [
+        "Blue Shield of California",
+        "Anthem",
+        "Humana",
+        "CareFirst",
+        "WellCare",
+        "UnitedHealthcare",
+        "Medicare",
+        "Alignment Healthcare",
+        "Clover",
+        "Health Net",
+        "Regence",
+        "Molina Healthcare",
+        "GEHA",
+        "EmblemHealth",
+        "Oscar",
+        "VillageCare",
+        "MediExcel",
+        "Aetna",
+        "Activision Blizzard"
+      ]
+    },
+    "competitors": {
+      "value": []
+    },
+    "investors": {
+      "value": [
+        "Paul Jacobs"
+      ]
+    },
+    "deck_date": {
+      "value": null
+    }
+  },
+  "expected_flags": [
+    {
+      "kind": "missing",
+      "field": "revenue",
+      "note": "three revenue models are described (full risk, value-based PCP cap, fee-for-service) but no revenue, margin or contract value figure appears in 23 slides"
+    },
+    {
+      "kind": "missing",
+      "field": "round_size",
+      "note": "no round size, valuation, stage or use of funds; the deck has no ask slide"
+    },
+    {
+      "kind": "missing",
+      "field": "location",
+      "note": "HQ is never stated; the markets slide lists service cities (DC, NYC, Chicago, Southern CA, Seattle, Atlanta, Houston, Charlotte) only"
+    },
+    {
+      "kind": "contradiction",
+      "field": "metrics",
+      "note": "'Who is Heal' slide claims 71% reduction in avoidable ER visits and 28% reduction in admissions; the value-based-care results slide later gives 27% reduction in ER visits and 27% reduction in hospital admissions, with no reconciliation of population or period"
+    },
+    {
+      "kind": "unsupported",
+      "field": "market",
+      "note": "'Every dollar invested in effective primary care saves $13 in total healthcare costs' presented as a headline with no source or derivation"
+    },
+    {
+      "kind": "unsupported",
+      "field": "metrics",
+      "note": "'$88MM healthcare cost savings for leading employers and insurance partners' given with no period, no member base and no method; '200K house calls and telehealth visits' likewise has no time frame"
+    }
+  ]
+}

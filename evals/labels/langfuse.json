@@ -1,0 +1,102 @@
+{
+  "_deck": "DACH/langfuse_overview_oct_25_24.pdf",
+  "_source": "public deck, collected 13 Sep 2026",
+  "_labelled_by": "santino",
+  "_notes": "15 pages. A product-overview / enterprise-intro deck rather than a fundraising deck: two text slides of positioning, eight UI screenshots, a roadmap and a contact slide. No team page, no market sizing, no financials; the only hard numbers are adoption metrics and the prior raise. Investors named twice - '$4m from YC, Lightspeed, General Catalyst' on p3 and 'our investors (Y Combinator, Lightspeed & General Catalyst)' on the closing slide; the deck states no date of its own (the '2M SDK installs in Oct 24' line dates the metric, not the deck, and 'oct_25_24' appears only in the filename). LABEL CORRECTED 18 Sep: round_size had been set to the $4M TOTAL RAISED TO DATE, which is not the round being raised. The extractor correctly returned null; the label was wrong.",
+  "company": "Langfuse",
+  "fields": {
+    "one_liner": {
+      "value": "Langfuse is the open source LLM Engineering Platform: ingest the full context of your LLM application, build a dataset of its performance, and iterate with prompt management, evals and datasets"
+    },
+    "sector": {
+      "value": "saas"
+    },
+    "stage": {
+      "value": null
+    },
+    "location": {
+      "value": null
+    },
+    "founders": {
+      "value": null
+    },
+    "revenue": {
+      "value": null,
+      "unit": null,
+      "period": null,
+      "as_of": null
+    },
+    "growth": {
+      "value": null,
+      "unit": null,
+      "period": null,
+      "as_of": null
+    },
+    "users": {
+      "value": 2000000,
+      "unit": "SDK installs",
+      "period": "cumulative",
+      "as_of": "Oct 2024"
+    },
+    "round_size": {
+      "value": null,
+      "unit": null,
+      "period": null,
+      "as_of": null
+    },
+    "valuation": {
+      "value": null,
+      "unit": null,
+      "period": null,
+      "as_of": null
+    },
+    "customers": {
+      "value": []
+    },
+    "competitors": {
+      "value": []
+    },
+    "investors": {
+      "value": [
+        "Y Combinator",
+        "Lightspeed",
+        "General Catalyst"
+      ]
+    },
+    "deck_date": {
+      "value": null
+    }
+  },
+  "expected_flags": [
+    {
+      "kind": "missing",
+      "field": "revenue",
+      "note": "no revenue, ARR or pricing figure anywhere in 15 slides; commercialisation is described only qualitatively on the roadmap slide"
+    },
+    {
+      "kind": "missing",
+      "field": "round_size",
+      "note": "no current round, ask or use of funds; the only funding number is '$4m raised' from YC, Lightspeed and General Catalyst, with no date or round name"
+    },
+    {
+      "kind": "missing",
+      "field": "founders",
+      "note": "no team slide; no founder is named anywhere (only a generic founders@langfuse.com address)"
+    },
+    {
+      "kind": "missing",
+      "field": "location",
+      "note": "deck never states HQ or country"
+    },
+    {
+      "kind": "missing",
+      "field": "market",
+      "note": "no TAM/SAM, no market sizing and no competitive landscape in the whole deck"
+    },
+    {
+      "kind": "unsupported",
+      "field": "customers",
+      "note": "closing slide offers 'intros/references to enterprise customers and large silicon valley scale ups that use Langfuse' but not a single customer is named or logo shown"
+    }
+  ]
+}

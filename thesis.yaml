@@ -1,0 +1,64 @@
+# Investment thesis Readit scores against.
+# Reconstructed from public information about an Austrian single family office
+# (evergreen holder, ~3-4 lead investments a year, strong Austria focus).
+# Edit freely: this file is the only place the screener's opinions live.
+
+name: "Evergreen Austrian family office"
+
+geography:
+  weight: 0.25
+  preferred: ["Austria"]
+  acceptable: ["Germany", "Switzerland", "CEE"]
+  note: "Strong Austria focus. Non-DACH is not disqualifying but needs a reason."
+
+stage:
+  weight: 0.20
+  preferred: ["seed", "series-a"]
+  acceptable: ["pre-seed", "series-b"]
+  note: >
+    Evergreen holder with pro-rata in every follow-on, so entry stage matters
+    less than the ability to keep funding the company for a decade.
+
+sectors:
+  weight: 0.20
+  preferred:
+    - saas
+    - fintech
+    - healthtech
+    - edtech
+    - deeptech
+    - proptech
+    - marketplace
+  acceptable: [media, crypto, consumer]
+  avoid: []
+  note: "Generalist by track record. Sector is a weak signal, not a filter."
+
+team:
+  weight: 0.25
+  signals_positive:
+    - "founder has operated or built before"
+    - "domain experience that predates the company"
+    - "team is complete for the stage (no missing technical or commercial half)"
+    - "founders are named, with verifiable history"
+  signals_negative:
+    - "no named founders in the deck"
+    - "advisors listed more prominently than the team"
+  note: >
+    People-first mandate. This is the heaviest weight on purpose: the thesis is
+    backing people for a long time, not buying a market.
+
+traction:
+  weight: 0.10
+  signals_positive:
+    - "revenue figure with a currency, a period and an as-of date"
+    - "named paying customers"
+    - "retention or repeat-purchase evidence"
+  signals_negative:
+    - "growth percentage with no base"
+    - "TAM as the headline number"
+    - "pilots or LOIs presented as revenue"
+
+hard_flags:
+  - "no named founders anywhere in the deck"
+  - "numbers that contradict each other between slides"
+  - "market size used in place of any company metric"

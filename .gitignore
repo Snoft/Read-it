@@ -1,0 +1,10 @@
+.env
+*.pyc
+__pycache__/
+.venv/
+venv/
+evals/decks/*
+!evals/decks/.gitkeep
+out/
+*.db
+.DS_Store

@@ -1,0 +1,106 @@
+{
+  "_deck": "Juno_s_4M_pitch_deck_for_employee_wellness_benefits.pdf",
+  "_source": "public deck, collected 13 Sep 2026",
+  "_labelled_by": "santino",
+  "_notes": "10 pages. Vision, product and positioning deck for an employee wellbeing benefits marketplace, ending on a customer case study. Names the founder on the cover and shows client logos, but states no round size, no revenue and no team beyond the CEO - the '$4M' appears only in the filename, never in the deck. No investor is named anywhere in the 10 slides ('Trusted by' is customers and 'Partnering with' is suppliers), and the deck states no date.",
+  "company": "Juno",
+  "fields": {
+    "one_liner": {
+      "value": "Reinventing the way employees experience work: a wellbeing marketplace, expense platform and virtual card giving employers one global touch point for benefits and wellbeing budgets"
+    },
+    "sector": {
+      "value": "marketplace"
+    },
+    "stage": {
+      "value": null
+    },
+    "location": {
+      "value": null
+    },
+    "founders": {
+      "value": [
+        "Ally Fekaiki"
+      ]
+    },
+    "revenue": {
+      "value": null,
+      "unit": null,
+      "period": null,
+      "as_of": null
+    },
+    "growth": {
+      "value": null,
+      "unit": null,
+      "period": null,
+      "as_of": null
+    },
+    "users": {
+      "value": null,
+      "unit": null,
+      "period": null,
+      "as_of": null
+    },
+    "round_size": {
+      "value": null,
+      "unit": null,
+      "period": null,
+      "as_of": null
+    },
+    "valuation": {
+      "value": null,
+      "unit": null,
+      "period": null,
+      "as_of": null
+    },
+    "customers": {
+      "value": [
+        "Brightpearl",
+        "BornSocial",
+        "Oyster",
+        "Paddle",
+        "Stuart"
+      ]
+    },
+    "competitors": {
+      "value": []
+    },
+    "investors": {
+      "value": []
+    },
+    "deck_date": {
+      "value": null
+    }
+  },
+  "expected_flags": [
+    {
+      "kind": "missing",
+      "field": "round_size",
+      "note": "no round size, valuation, stage or use of funds anywhere in the 10 slides; the deck has no ask slide at all"
+    },
+    {
+      "kind": "missing",
+      "field": "revenue",
+      "note": "no revenue, ARR, take rate or client count; the only revenue reference is a footer line, 'Over 30% our revenue is fuelled by existing client growth', which is a percentage with no base"
+    },
+    {
+      "kind": "missing",
+      "field": "founders",
+      "note": "only Ally Fekaiki (Founder & CEO) is named, on the cover; there is no team slide and no other person, role or headcount in the deck"
+    },
+    {
+      "kind": "missing",
+      "field": "location",
+      "note": "deck never states HQ or home market; geography appears only as the customer's operating countries in the case study"
+    },
+    {
+      "kind": "unsupported",
+      "field": "growth",
+      "note": "the deck's only growth chart ('300% employee growth, 5x revenue growth', Jan-Jul) describes the customer Stuart, not Juno, and has unlabelled axes with no starting figures"
+    },
+    {
+      "kind": "unsupported",
+      "field": "market",
+      "note": "'the only wellbeing solution employers need' and 'the primary player in the flexible benefits market' asserted with no competitive data and no competitor named; '725 global services' and 'over 50% of Juno's clients increase in size and spend within 6 months' are given without any base count"
+    }
+  ]
+}

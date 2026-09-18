@@ -1,0 +1,98 @@
+{
+  "_deck": "DACH/Wunderlist-pitch-deck.pdf",
+  "_source": "public deck, collected 13 Sep 2026",
+  "_labelled_by": "santino",
+  "_notes": "10 pages. A short traction-and-product deck: user metrics, a growth chart, press wall, geography, app-store ratings and a pricing slide. Strong on usage numbers, silent on the company itself - no revenue, no team, no HQ, no ask. No investor is named anywhere (the logo wall is press coverage, not backers), and the deck states no date - Dec '12 and Jul '13 are only axis labels on the growth chart.",
+  "company": "Wunderlist",
+  "fields": {
+    "one_liner": {
+      "value": "The only way to organize your life and work"
+    },
+    "sector": {
+      "value": "consumer"
+    },
+    "stage": {
+      "value": null
+    },
+    "location": {
+      "value": null
+    },
+    "founders": {
+      "value": null
+    },
+    "revenue": {
+      "value": null,
+      "unit": null,
+      "period": null,
+      "as_of": null
+    },
+    "growth": {
+      "value": 4,
+      "unit": "x",
+      "period": "DAU growth within 6 months",
+      "as_of": null
+    },
+    "users": {
+      "value": 5000000,
+      "unit": "registered users",
+      "period": null,
+      "as_of": null
+    },
+    "round_size": {
+      "value": null,
+      "unit": null,
+      "period": null,
+      "as_of": null
+    },
+    "valuation": {
+      "value": null,
+      "unit": null,
+      "period": null,
+      "as_of": null
+    },
+    "customers": {
+      "value": []
+    },
+    "competitors": {
+      "value": []
+    },
+    "investors": {
+      "value": []
+    },
+    "deck_date": {
+      "value": null
+    }
+  },
+  "expected_flags": [
+    {
+      "kind": "missing",
+      "field": "revenue",
+      "note": "pricing is shown ($4.99/mo, $49.99/yr, team plans) but no revenue, no paying-user count and no free-to-paid conversion rate"
+    },
+    {
+      "kind": "missing",
+      "field": "round_size",
+      "note": "no round size, ask or use of funds anywhere in the deck"
+    },
+    {
+      "kind": "missing",
+      "field": "founders",
+      "note": "no team slide; no founder or employee is named"
+    },
+    {
+      "kind": "missing",
+      "field": "location",
+      "note": "deck never states HQ or country; the geography slide covers user distribution only"
+    },
+    {
+      "kind": "contradiction",
+      "field": "users",
+      "note": "metrics slide claims '500,000 daily active users' while the growth chart two slides later shows daily actives at 450k in Jul '13; the same slide's '4x DAU growth within 6 months' is charted as Dec '12 (120k) to Jul '13 (450k), i.e. 3.75x over seven months"
+    },
+    {
+      "kind": "unsupported",
+      "field": "market",
+      "note": "'category leader' and 'we are the owner of Tasks' asserted with no market size, share data or source; no competitor in task management is named"
+    }
+  ]
+}

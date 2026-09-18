@@ -1,0 +1,122 @@
+{
+  "_deck": "Rokoko_pitch_deck_80M_motion_capture_tech.pdf",
+  "_source": "public deck, collected 13 Sep 2026",
+  "_labelled_by": "santino",
+  "_notes": "17 pages (16 deck slides plus a bestpitchdeck.com advert page). Investor deck dated July 2022 with an unusually complete company page - founding date, HQ, headcount, customer logos and a fundraising history - but every revenue, ARR and projection figure is visibly redacted. Investors appear only in the fundraising-history slide (p15) as lead investors of rounds already closed - North-East Venture, VF Venture and Kickass Capital - while the 2022 strategic round and 2023 Series B name none; the deck dates itself 'July 2022' in the running header on every slide.",
+  "company": "Rokoko",
+  "fields": {
+    "one_liner": {
+      "value": "A one-stop-shop for digital movement: an AI-infused, collaborative, easily accessible, vertically integrated motion platform"
+    },
+    "sector": {
+      "value": "deeptech"
+    },
+    "stage": {
+      "value": "Strategic round"
+    },
+    "location": {
+      "value": "Copenhagen, Denmark"
+    },
+    "founders": {
+      "value": [
+        "Jakob Balslev",
+        "Matias Sondergaard"
+      ]
+    },
+    "revenue": {
+      "value": null,
+      "unit": null,
+      "period": null,
+      "as_of": null
+    },
+    "growth": {
+      "value": null,
+      "unit": null,
+      "period": null,
+      "as_of": null
+    },
+    "users": {
+      "value": 50000,
+      "unit": "users",
+      "period": null,
+      "as_of": "July 2022"
+    },
+    "round_size": {
+      "value": 3000000,
+      "unit": "USD",
+      "period": "2022 strategic round",
+      "as_of": "2022"
+    },
+    "valuation": {
+      "value": 80000000,
+      "unit": "USD",
+      "period": "pre-money",
+      "as_of": "2022"
+    },
+    "customers": {
+      "value": [
+        "Tesla",
+        "Volkswagen",
+        "Mercedes-Benz",
+        "BMW",
+        "Ford",
+        "Airbus",
+        "Sony",
+        "Adobe",
+        "Microsoft",
+        "Meta",
+        "Netflix",
+        "Snap Inc.",
+        "Twitch",
+        "Yale",
+        "Disney",
+        "Copenhagen Municipality"
+      ]
+    },
+    "competitors": {
+      "value": []
+    },
+    "investors": {
+      "value": [
+        "North-East Venture",
+        "VF Venture",
+        "Kickass Capital"
+      ]
+    },
+    "deck_date": {
+      "value": "July 2022"
+    }
+  },
+  "expected_flags": [
+    {
+      "kind": "missing",
+      "field": "revenue",
+      "note": "no readable revenue or ARR figure: the company-background charts, the ARR chart and the full 2022-2025 financial projections table are all overlaid with 'Redacted'"
+    },
+    {
+      "kind": "unsupported",
+      "field": "growth",
+      "note": "'Revenue growth over the last 3 years' and 'ARR growth' are shown as bar charts whose axes and values are redacted, so the growth claim has no base figure and no multiple"
+    },
+    {
+      "kind": "contradiction",
+      "field": "users",
+      "note": "'Rokoko at a glance' states more than 50,000 users in 100+ countries, while the commercial flywheel slide states Rokoko Motion Library has 80,000+ registered users, with no explanation of the difference"
+    },
+    {
+      "kind": "unsupported",
+      "field": "moat",
+      "note": "'the world's most powerful dataset of human motion' and 'the largest fleet of mocap systems in the market' asserted with no comparison, source or competitor data"
+    },
+    {
+      "kind": "unsupported",
+      "field": "metrics",
+      "note": "the mocap-systems-in-market and assets-created-per-year chart projects forward to 2024 (to ~80K systems and ~90M assets) with no stated assumptions or historical base beyond 2021-2022"
+    },
+    {
+      "kind": "missing",
+      "field": "use_of_funds",
+      "note": "the $3M strategic round and $80M pre-money are named in the fundraising history, but there is no use-of-proceeds, milestone plan or runway slide"
+    }
+  ]
+}

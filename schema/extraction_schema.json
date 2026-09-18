@@ -1,0 +1,71 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Readit extraction",
+  "description": "Every extracted value carries where it came from. A field with a value and no verifiable source_quote counts as a hallucination in the eval.",
+  "type": "object",
+  "required": ["company", "fields"],
+  "properties": {
+    "company": { "type": "string" },
+    "fields": {
+      "type": "object",
+      "properties": {
+        "one_liner":    { "$ref": "#/definitions/field" },
+        "sector":       { "$ref": "#/definitions/field" },
+        "stage":        { "$ref": "#/definitions/field" },
+        "location":     { "$ref": "#/definitions/field" },
+        "founders":     { "$ref": "#/definitions/field_list" },
+        "revenue":      { "$ref": "#/definitions/metric" },
+        "growth":       { "$ref": "#/definitions/metric" },
+        "users":        { "$ref": "#/definitions/metric" },
+        "round_size":   { "$ref": "#/definitions/metric" },
+        "valuation":    { "$ref": "#/definitions/metric" },
+        "customers":    { "$ref": "#/definitions/field_list" },
+        "competitors":  { "$ref": "#/definitions/field_list" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "definitions": {
+    "provenance": {
+      "type": "object",
+      "required": ["page", "source_quote"],
+      "properties": {
+        "page": { "type": "integer", "minimum": 1 },
+        "source_quote": {
+          "type": "string",
+          "description": "Verbatim text from that page. Must appear in the page text, character for character, or the eval marks the field hallucinated."
+        }
+      }
+    },
+    "field": {
+      "type": "object",
+      "required": ["value", "confidence"],
+      "properties": {
+        "value": { "type": ["string", "null"] },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "provenance": { "$ref": "#/definitions/provenance" }
+      }
+    },
+    "field_list": {
+      "type": "object",
+      "required": ["value", "confidence"],
+      "properties": {
+        "value": { "type": "array", "items": { "type": "string" } },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "provenance": { "$ref": "#/definitions/provenance" }
+      }
+    },
+    "metric": {
+      "type": "object",
+      "required": ["value", "confidence"],
+      "properties": {
+        "value":    { "type": ["number", "null"] },
+        "unit":     { "type": ["string", "null"], "description": "EUR, USD, percent, count" },
+        "period":   { "type": ["string", "null"], "description": "ARR, MRR, FY2025, QoQ" },
+        "as_of":    { "type": ["string", "null"], "description": "date or quarter the figure refers to" },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "provenance": { "$ref": "#/definitions/provenance" }
+      }
+    }
+  }
+}

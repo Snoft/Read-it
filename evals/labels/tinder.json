@@ -1,0 +1,98 @@
+{
+  "_deck": "Tinder_Pitch_Deck.pdf",
+  "_source": "public deck, collected 13 Sep 2026",
+  "_labelled_by": "santino",
+  "_notes": "10 pages. Early concept deck for the product branded 'Match Box' (later Tinder): a narrative problem story about a persona called Matt, four app mockups, a feature slide and a one-slide revenue model. Entirely pre-traction - not a single company number in the deck. No investor is named in the 10 slides and the deck states no date.",
+  "company": "Match Box",
+  "fields": {
+    "one_liner": {
+      "value": "The flirting game: like people around you and get connected if they like you too"
+    },
+    "sector": {
+      "value": "consumer"
+    },
+    "stage": {
+      "value": null
+    },
+    "location": {
+      "value": null
+    },
+    "founders": {
+      "value": null
+    },
+    "revenue": {
+      "value": null,
+      "unit": null,
+      "period": null,
+      "as_of": null
+    },
+    "growth": {
+      "value": null,
+      "unit": null,
+      "period": null,
+      "as_of": null
+    },
+    "users": {
+      "value": null,
+      "unit": null,
+      "period": null,
+      "as_of": null
+    },
+    "round_size": {
+      "value": null,
+      "unit": null,
+      "period": null,
+      "as_of": null
+    },
+    "valuation": {
+      "value": null,
+      "unit": null,
+      "period": null,
+      "as_of": null
+    },
+    "customers": {
+      "value": []
+    },
+    "competitors": {
+      "value": []
+    },
+    "investors": {
+      "value": []
+    },
+    "deck_date": {
+      "value": null
+    }
+  },
+  "expected_flags": [
+    {
+      "kind": "missing",
+      "field": "revenue",
+      "note": "no revenue figure; the 'Revenue Opportunity' slide describes an in-app purchase model only"
+    },
+    {
+      "kind": "missing",
+      "field": "users",
+      "note": "no users, downloads, signups, launch date or any traction metric in 10 slides"
+    },
+    {
+      "kind": "missing",
+      "field": "round_size",
+      "note": "no ask, round size, valuation or use of funds; the deck ends on the revenue model slide"
+    },
+    {
+      "kind": "missing",
+      "field": "founders",
+      "note": "no team slide; 'Matt' is a narrative persona in the problem story, and 'Matt Pouldar' appears only inside a mock chat screenshot - no founder is stated"
+    },
+    {
+      "kind": "missing",
+      "field": "market",
+      "note": "no market sizing, no TAM/SAM and no named competitor in online dating"
+    },
+    {
+      "kind": "unsupported",
+      "field": "revenue",
+      "note": "'$1 to see each new match' monetisation presented with no user, match-volume, conversion or ARPU assumption behind it"
+    }
+  ]
+}

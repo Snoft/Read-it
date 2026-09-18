@@ -1,0 +1,95 @@
+{
+  "_deck": "DACH/PitchDeck_hypt.pdf",
+  "_source": "public deck, collected 13 Sep 2026",
+  "_labelled_by": "santino",
+  "_notes": "12 pages.Short pithc deg about hypt. Engaging and visually appealing",
+  "company": "hypt",
+  "fields": {
+    "one_liner": {
+      "value": "Rewriting how companies grow"
+    },
+    "sector": {
+      "value": "b2b saas"
+    },
+    "stage": {
+      "value": "seed extension round"
+    },
+    "location": {
+      "value": "DACH switzerland"
+    },
+    "founders": {
+      "value": [
+        "Tobias Wegmüller (Co-CEO)",
+        "Pascal Sollberger (Co-CEO)",
+        "Roger Ellenberger (CTO)"
+      ]
+    },
+    "revenue": {
+      "value": 700000,
+      "unit": "$",
+      "period": "ARR",
+      "as_of": "2026-09-13"
+    },
+    "growth": {
+      "value": 260,
+      "unit": "%",
+      "period": "YoY Growth 2022-2025",
+      "as_of": null
+    },
+    "users": {
+      "value": null,
+      "unit": null,
+      "period": null,
+      "as_of": null
+    },
+    "round_size": {
+      "value": 1500000,
+      "unit": "$",
+      "period": null,
+      "as_of": "Q3 2026"
+    },
+    "valuation": {
+      "value": null,
+      "unit": null,
+      "period": null,
+      "as_of": null
+    },
+    "investors": {
+      "value": [
+        "Venpace",
+        "SixThirty",
+        "Core Angels",
+        "Gateway Ventures",
+        "SICTIC",
+        "NCA",
+        "Swisspreneur"
+      ],
+      "raised_to_date": 2400000,
+      "unit": "$",
+      "note": "equity"
+    },
+    "customers": {
+      "value": [],
+      "count": 45,
+      "note": "monthly paying B2B customers; no logos named; avg ACV $30k, largest licence $113k; avg sales cycle 3.8 mth"
+    },
+    "competitors": {
+      "value": [
+        "Medallia",
+        "Qualtrics"
+      ]
+    }
+  },
+  "expected_flags": [
+    {
+      "kind": "unverified",
+      "field": "customers",
+      "note": "logos shown without case studies, named references or revenue attribution"
+    },
+    {
+      "kind": "missing",
+      "field": "valuation",
+      "note": "no pre/post-money given"
+    }
+  ]
+}

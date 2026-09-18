@@ -1,0 +1,24 @@
+{
+  "_deck": "filename.pdf",
+  "_source": "where you got it, and whether it is public",
+  "_labelled_by": "santino",
+  "_notes": "",
+  "company": "",
+  "fields": {
+    "one_liner":   { "value": null },
+    "sector":      { "value": null },
+    "stage":       { "value": null },
+    "location":    { "value": null },
+    "founders":    { "value": [] },
+    "revenue":     { "value": null, "unit": null, "period": null, "as_of": null },
+    "growth":      { "value": null, "unit": null, "period": null, "as_of": null },
+    "users":       { "value": null, "unit": null, "period": null, "as_of": null },
+    "round_size":  { "value": null, "unit": null, "period": null, "as_of": null },
+    "valuation":   { "value": null, "unit": null, "period": null, "as_of": null },
+    "customers":   { "value": [] },
+    "competitors": { "value": [] }
+  },
+  "expected_flags": [
+    { "kind": "missing", "field": "revenue", "note": "deck never states a revenue figure" }
+  ]
+}

@@ -1,0 +1,116 @@
+{
+  "_deck": "DACH/Bryter-Pitch-Deck.pdf",
+  "_source": "public deck, collected 12 Sep 2026",
+  "_labelled_by": "santino",
+  "_notes": "23 pages. Worked example. Heavy on narrative and market framing, almost nothing quantitative about the company itself: no revenue, no round size, no stage, no HQ. Customer logos and the team page are the only hard facts. Exactly the kind of deck the flagging pass has to earn its keep on. Investors named under an 'Investors' heading on the team slide (p22): Accel, Notion and Cavalry Ventures plus four angels (Mike Chalfen, Charles Songhurst, Mirko Novakovic, Michael Mitterlehner); the deck carries no date on the cover, in a footer or anywhere else.",
+  "company": "BRYTER",
+  "fields": {
+    "one_liner": {
+      "value": "Professional service automation: lets professional service experts automate and scale their expertise without coding"
+    },
+    "sector": {
+      "value": "saas"
+    },
+    "stage": {
+      "value": null
+    },
+    "location": {
+      "value": null
+    },
+    "founders": {
+      "value": [
+        "Michael Grupp",
+        "Micha-Manuel Bues",
+        "Michael Hübl"
+      ]
+    },
+    "revenue": {
+      "value": null,
+      "unit": null,
+      "period": null,
+      "as_of": null
+    },
+    "growth": {
+      "value": null,
+      "unit": null,
+      "period": null,
+      "as_of": null
+    },
+    "users": {
+      "value": null,
+      "unit": null,
+      "period": null,
+      "as_of": null
+    },
+    "round_size": {
+      "value": null,
+      "unit": null,
+      "period": null,
+      "as_of": null
+    },
+    "valuation": {
+      "value": null,
+      "unit": null,
+      "period": null,
+      "as_of": null
+    },
+    "customers": {
+      "value": [
+        "PwC Legal",
+        "ING",
+        "McDonald's",
+        "Baker McKenzie",
+        "Telefonica",
+        "Hogan Lovells",
+        "Deloitte",
+        "Taylor Wessing",
+        "Ashurst",
+        "Simmons & Simmons"
+      ]
+    },
+    "competitors": {
+      "value": []
+    },
+    "investors": {
+      "value": [
+        "Accel",
+        "Notion",
+        "Cavalry Ventures",
+        "Mike Chalfen",
+        "Charles Songhurst",
+        "Mirko Novakovic",
+        "Michael Mitterlehner"
+      ]
+    },
+    "deck_date": {
+      "value": null
+    }
+  },
+  "expected_flags": [
+    {
+      "kind": "missing",
+      "field": "revenue",
+      "note": "no revenue figure anywhere in 23 slides"
+    },
+    {
+      "kind": "missing",
+      "field": "round_size",
+      "note": "never states how much is being raised, unusual for a pitch deck"
+    },
+    {
+      "kind": "missing",
+      "field": "stage",
+      "note": "no round or stage named; investors are listed but the raise is not"
+    },
+    {
+      "kind": "missing",
+      "field": "location",
+      "note": "no HQ or country stated on any slide"
+    },
+    {
+      "kind": "unsupported",
+      "field": "market",
+      "note": "'$30bn SAM' and '260bn core legal market' given as headline numbers with no source or derivation"
+    }
+  ]
+}
