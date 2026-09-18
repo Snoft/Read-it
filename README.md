@@ -14,29 +14,35 @@ python evals/review.py bryter   # extraction next to its label, field by field
 ```
 
 Built in a week with Claude as a pair — see *How this was built* below for
-who did what. It runs on command line, further info on the sections below.
+who did what. It runs on the command line, further info in the sections below.
 
 ## Why every value carries its source
 
-As hallucinations are not fully avoidable (yet), sources were added to the model's outputs. 
-Every value carries the page number and the sentence it came from. Untraceable values will
-be counted as hallucinations and absent values seens as valid useful answers.
+As hallucinations are not fully avoidable (yet), sources were added to the
+model's outputs. Every value carries the page number and the sentence it came
+from, so a reader can check any figure in two seconds instead of trusting it.
+Absent is treated as a valid, useful answer rather than something to fill in.
 
-This design proves to be highly valuable, e.g. when the tool reported a decks stage as "Series B"
-with the attached quote "2023 → Series B $25M" it was instantly clear the tool made an outdated error.
-This can be fixed by further rules and tests on those sources. 
+This proved its worth while building. The tool reported one deck's stage as
+"Series B", and the attached quote — *"2023 → Series B $25M"* — made it
+immediately clear where that came from: a roadmap slide of rounds the company
+planned to raise later, not the round it was actually asking for. Without the
+quote it would have been an unexplained wrong answer instead of a five-second
+diagnosis.
 
 ## Three values, not two
 
-Metrics carry a `status` of `stated`, `redacted` or `absent`. This has become necessary as many decks are 
-atypical with censoured, absent or as redacted marked values. This proved to improve results with such decks
-dramatically. 
+Metrics carry a `status` of `stated`, `redacted` or `absent`. This became
+necessary because many decks are atypical: figures are blacked out, blurred or
+marked as redacted rather than simply missing. A redacted revenue slide and a
+deck that never mentions revenue call for opposite responses — chase it, or
+accept there may be nothing to chase — and collapsing both into null loses that.
 
 ## What it flags
 
-For now only simple flags e.g. *"There is no revenue figure anywhere in 23 slides"*
-To avoid false positives (flags) it is kept simple and not too strict. Work in progress. 
-
+For now only simple flags, e.g. *"There is no revenue figure anywhere in 23
+slides"*. To avoid false positives it is kept conservative rather than clever: a
+wrong flag costs more trust than three missed ones. Work in progress.
 
 ## Quality
 
@@ -56,10 +62,28 @@ python evals/run_eval.py --model claude-haiku-4-5-20251001   # comparison run
 be checked** against a page with a text layer and 33 could not (see below).
 
 **The comparison has a clear answer, and it is not about accuracy.** Haiku is a
-fraction of the price and scores five points lower on fieldsand hallucinates 67% more. 
-It misreads proper nouns off images and doesn't find the logos.
-On Rokoko it found 8 of 16 customer logos; sonnet found all 16.
-**Run this on sonnet or better.**
+fraction of the price and scores five points lower on fields, and hallucinates
+67% more. It misreads proper nouns off images and misses logos: on Rokoko it
+found 8 of 16 customer logos where sonnet found all 16. For a tool whose output
+is largely names, that is disqualifying at any price. **Run this on sonnet or
+better.**
+
+### What the answer key actually is
+
+The labels were drafted by a larger model reading the decks without a schema and
+without time pressure, then reviewed and corrected by hand. So the accuracy
+figure measures agreement between a constrained extractor and an unconstrained
+one, filtered through a human — not correctness against ground truth.
+
+Reviewing mattered. One label was outright wrong: `langfuse` had `round_size`
+set to the $4M **total raised to date**, which is not the round being raised.
+The extractor returned null, correctly, because of a rule about funding-history
+slides — so a rule in the prompt caught an error in its own answer key.
+
+Free text (`one_liner`) is excluded from the accuracy count, because two correct
+one-line descriptions of the same company rarely match as strings. Names are
+compared with accents folded, so a label typed as "Sondergaard" does not mark
+"Søndergaard" wrong.
 
 ### What made claude sonnet 5 only 0.737 accurate?
 
@@ -80,20 +104,27 @@ Eight misses on the sonnet run, and only one is an extraction fault:
 - **One is a true miss.** Sonnet returned null for hypt's location; haiku found
   "Switzerland" on the same slide.
 
-  Most of these are discussable ambigous results and a further notice about it's ambigouity
-  could fix part of the problem.
+Most of these are ambiguous rather than wrong, and saying so in the field
+descriptions would fix part of the problem.
 
 ### Where the hallucination rate comes from
 
-Pitch decks are almost entirely graphics, so **72% of the provenance in this run cannot be
-verified by the harness at all**. As most of the decks simply need OCR and cannot be read as
-normal text more is marked as hallucination than what's actually the case.
+Pitch decks are almost entirely graphics, so **72% of the provenance in this run
+cannot be verified by the harness at all**. Most decks need OCR and cannot be
+read as text, so a quote on an image page can only be judged "cannot tell", not
+"invented".
+
+An earlier version of the harness counted every unverifiable quote as a
+hallucination and reported a rate of 92%. That number was meaningless, and the
+fix was to separate "wrong" from "cannot tell" rather than let a scary figure
+stand. OCR is the next real piece of work on this project.
 
 ## Problems that come up with many decks
 
-- **Filenames dont represent.** Juno's deck is called `Juno_s_4M_pitch_deck...` and never
-  states a round size anywhere inside. langfuse's filename carries a date the
-  deck does not. The prompt now says the filename is not part of the document.
+- **Filenames don't represent.** Juno's deck is called `Juno_s_4M_pitch_deck...`
+  and never states a round size anywhere inside. langfuse's filename carries a
+  date the deck does not. The prompt now says the filename is not part of the
+  document.
 - **Decks do not date themselves.** One of eight carries a date (Rokoko, in a
   running header). This is why `deck_date` is usually null, and why an evergreen
   holder has to record the date a deck *arrived* rather than hoping to read it.
@@ -133,7 +164,7 @@ office rather than a generic deck parser:**
 - **No agent framework.** One call with the whole deck under a forced schema is
   easier to read and debug than a graph, and nothing here needs one.
 - **No vector database.** The corpus is one deck plus a thesis file. Retrieval
-  over seven documents is a `for` loop; reaching for RAG here would be
+  over eight documents is a `for` loop; reaching for RAG here would be
   decoration.
 - **Graphic pages go in as images.** Most decks are almost entirely graphics, so
   pages with a thin text layer are rasterised and everything else stays text.
