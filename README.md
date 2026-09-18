@@ -13,8 +13,9 @@ python -m readit.cli screen evals/decks/<deck>.pdf
 python evals/review.py bryter   # extraction next to its label, field by field
 ```
 
-Built in a week. It runs on the command line, it is not deployed, and the
-sections below say plainly what it does and does not do.
+Built in a week with Claude as a pair — see *How this was built* below for
+who did what. It runs on the command line, it is not deployed, and the sections
+below say plainly what it does and does not do.
 
 ## Why every value carries its source
 
@@ -144,6 +145,34 @@ and that is the next real piece of work on this project.
 - **Logo walls are ambiguous.** Press coverage, customers, partners and
   investors all appear as grids of logos under different headings, and telling
   them apart is most of what `investors` and `customers` have to get right.
+
+## How this was built
+
+Written over a week, working with Claude as a pair. Being exact about that,
+because the division of labour is the point rather than a disclaimer.
+
+**Claude wrote most of the code and much of this document.** The ingestion,
+scoring, memo rendering, CLI, cache and eval harness are largely its work, as is
+the first draft of the extraction prompt.
+
+**The design decisions are mine, and they are what make this specific to a family
+office rather than a generic deck parser:**
+
+- `status` as three values — stated, redacted, absent — because a blacked-out
+  revenue slide and a deck that never mentions revenue call for opposite
+  responses from a reader. This came from noticing Rokoko's redactions.
+- The `investors` and `deck_date` fields, because who else is already in is a
+  primary screen for an evergreen holder, and a deck's age changes what its
+  stage means.
+- The rule that funding-history and roadmap slides are not the current raise.
+  That rule then caught an error in my own answer key: a label had recorded
+  langfuse's total-raised-to-date as its round size, and the extractor was right
+  to return null.
+- Catching that the drafted labels flagged contradictions too aggressively, and
+  that `sector` was conflating business model with industry.
+
+I understand every line in this repository and can defend each design decision,
+which is the bar I held myself to. What I cannot claim is having typed it all.
 
 ## Design notes
 
