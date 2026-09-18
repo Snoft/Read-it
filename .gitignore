@@ -8,3 +8,6 @@ evals/decks/*
 out/
 *.db
 .DS_Store
+evals/.cache/
+NEXT.md
+check_api.py
