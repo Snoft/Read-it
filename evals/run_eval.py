@@ -36,6 +36,7 @@ def main() -> int:
         return 1
 
     results, failures = [], []
+    spend = {"in": 0, "out": 0, "usd": 0.0, "retries": 0}
     for lp in labels:
         label = json.loads(lp.read_text(encoding="utf8"))
         deck_path = ROOT / "evals" / "decks" / label["_deck"]
@@ -44,7 +45,9 @@ def main() -> int:
             continue
         try:
             deck = ingest.load(deck_path)
-            extraction = extract_mod.extract(deck, model=a.model)
+            extraction, usage = extract_mod.extract(deck, model=a.model, with_usage=True)
+            for k in spend:
+                spend[k] += usage.get(k, 0)
             fl = flags_mod.find_flags(deck, extraction, thesis)
             results.append(metrics.grade(extraction, label, deck, fl))
             print(f"  ok   {label['_deck']}")
@@ -61,6 +64,13 @@ def main() -> int:
         return 1
 
     summary = metrics.summarise(results)
+    n = len(results)
+    summary["tokens_in"] = spend["in"]
+    summary["tokens_out"] = spend["out"]
+    summary["usd_total"] = round(spend["usd"], 4)
+    summary["usd_per_deck"] = round(spend["usd"] / n, 4) if n else None
+    # A run that needed retries is not the same result as one that did not.
+    summary["retries"] = spend["retries"]
     print("\n" + "-" * 52)
     print(f"model: {a.model}")
     for k, v in summary.items():
@@ -71,6 +81,14 @@ def main() -> int:
     for r in sorted(results, key=lambda r: len(r.wrong), reverse=True)[:5]:
         for w in r.wrong[:3]:
             print(f"  {r.deck}: {w}")
+    noise = [f"{r.deck}: {x}" for r in results for x in r.flags_not_in_key]
+    if noise:
+        print("\nFlags the answer key does not ask for (read these, they are not "
+              "automatically wrong):")
+        for x in noise[:15]:
+            print("  ", x)
+        if len(noise) > 15:
+            print(f"   ... and {len(noise) - 15} more")
     if any(r.hallucinated for r in results):
         print("\nHallucinated (value with no quote on the page):")
         for r in results:

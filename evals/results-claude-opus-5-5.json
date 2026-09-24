@@ -1,43 +1,41 @@
 {
-  "model": "claude-haiku-4-5-20251001",
+  "model": "claude-opus-5-5",
   "summary": {
     "decks": 8,
     "fields_present": 38,
-    "field_accuracy": 0.711,
-    "fields_with_value": 48,
-    "quotes_checkable": 12,
-    "quotes_unverifiable": 36,
-    "quotes_verbatim": 9,
-    "quotes_rearranged": 3,
+    "field_accuracy": 0.789,
+    "fields_with_value": 46,
+    "quotes_checkable": 13,
+    "quotes_unverifiable": 33,
+    "quotes_verbatim": 13,
+    "quotes_rearranged": 0,
     "hallucination_rate": 0.0,
     "hallucinated_fields": 0,
-    "flag_recall": 0.465,
+    "flag_recall": 0.488,
     "flag_recall_by_kind": {
-      "contradiction": "1/3",
-      "missing": "19/28",
+      "contradiction": "0/3",
+      "missing": "21/28",
       "unsupported": "0/11",
       "unverified": "0/1"
     },
     "flags_produced": 41,
-    "flags_not_in_key": 21,
-    "tokens_in": 122579,
-    "tokens_out": 8514,
-    "usd_total": 0.165,
-    "usd_per_deck": 0.0206
+    "flags_not_in_key": 20,
+    "tokens_in": 135853,
+    "tokens_out": 10589,
+    "usd_total": 0.7552,
+    "usd_per_deck": 0.0944,
+    "retries": 0
   },
   "per_deck": [
     {
       "deck": "DACH/Bryter-Pitch-Deck.pdf",
-      "correct": 2,
+      "correct": 4,
       "present": 4,
-      "wrong": [
-        "founders: got ['Michael Grupp', 'Dr. Micha-Manuel Bues', 'Michael Höbl'], label ['Michael Grupp', 'Micha-Manuel Bues', 'Michael Hübl']",
-        "investors: got ['Accel', 'Notion Capital', 'Cavalry Ventures', 'Mike Chaifen', 'Charles Songhurst', 'Mirko Novakovic', 'Michael Mittendorfer'], label ['Accel', 'Notion', 'Cavalry Ventures', 'Mike Chalfen', 'Charles Songhurst', 'Mirko Novakovic', 'Michael Mitterlehner']"
-      ],
+      "wrong": [],
       "hallucinated": [],
-      "valued": 6,
+      "valued": 5,
       "checkable": 0,
-      "unverifiable": 6,
+      "unverifiable": 5,
       "verbatim": 0,
       "rearranged": [],
       "flags_expected": 5,
@@ -59,23 +57,20 @@
     },
     {
       "deck": "Heal.pdf",
-      "correct": 4,
+      "correct": 5,
       "present": 5,
-      "wrong": [
-        "investors: got [], label ['Paul Jacobs']"
-      ],
+      "wrong": [],
       "hallucinated": [],
-      "valued": 5,
+      "valued": 6,
       "checkable": 0,
-      "unverifiable": 5,
+      "unverifiable": 6,
       "verbatim": 0,
       "rearranged": [],
       "flags_expected": 6,
       "flags_found": 3,
-      "flags_produced": 6,
+      "flags_produced": 5,
       "flags_not_in_key": [
         "missing:deck_date",
-        "missing:investors",
         "missing:stage"
       ],
       "by_kind": {
@@ -105,15 +100,11 @@
         "investors: got [], label ['Venpace', 'SixThirty', 'Core Angels', 'Gateway Ventures', 'SICTIC', 'NCA', 'Swisspreneur']"
       ],
       "hallucinated": [],
-      "valued": 9,
-      "checkable": 7,
-      "unverifiable": 2,
-      "verbatim": 4,
-      "rearranged": [
-        "founders",
-        "revenue",
-        "growth"
-      ],
+      "valued": 10,
+      "checkable": 9,
+      "unverifiable": 1,
+      "verbatim": 9,
+      "rearranged": [],
       "flags_expected": 2,
       "flags_found": 0,
       "flags_produced": 3,
@@ -135,11 +126,9 @@
     },
     {
       "deck": "Juno_s_4M_pitch_deck_for_employee_wellness_benefits.pdf",
-      "correct": 2,
+      "correct": 3,
       "present": 3,
-      "wrong": [
-        "sector: got 'saas', label 'marketplace'"
-      ],
+      "wrong": [],
       "hallucinated": [],
       "valued": 4,
       "checkable": 0,
@@ -171,21 +160,21 @@
       "present": 3,
       "wrong": [],
       "hallucinated": [],
-      "valued": 5,
-      "checkable": 5,
+      "valued": 4,
+      "checkable": 4,
       "unverifiable": 0,
-      "verbatim": 5,
+      "verbatim": 4,
       "rearranged": [],
       "flags_expected": 6,
-      "flags_found": 3,
-      "flags_produced": 5,
+      "flags_found": 4,
+      "flags_produced": 6,
       "flags_not_in_key": [
         "missing:deck_date",
         "missing:stage"
       ],
       "by_kind": {
         "missing": [
-          3,
+          4,
           5
         ],
         "unsupported": [
@@ -196,10 +185,11 @@
     },
     {
       "deck": "Rokoko_pitch_deck_80M_motion_capture_tech.pdf",
-      "correct": 9,
+      "correct": 8,
       "present": 10,
       "wrong": [
-        "customers: got ['Airbus', 'Sony', 'Meta', 'Microsoft', 'Netflix', 'Snap Inc.', 'Walt Disney', 'Yale'], label ['Tesla', 'Volkswagen', 'Mercedes-Benz', 'BMW', 'Ford', 'Airbus', 'Sony', 'Adobe', 'Microsoft', 'Meta', 'Netflix', 'Snap Inc.', 'Twitch', 'Yale', 'Disney', 'Copenhagen Municipality']"
+        "sector: got 'saas', label 'deeptech'",
+        "stage: got 'strategic', label 'Strategic round'"
       ],
       "hallucinated": [],
       "valued": 11,
@@ -234,14 +224,14 @@
       "present": 1,
       "wrong": [],
       "hallucinated": [],
-      "valued": 3,
+      "valued": 2,
       "checkable": 0,
-      "unverifiable": 3,
+      "unverifiable": 2,
       "verbatim": 0,
       "rearranged": [],
       "flags_expected": 6,
-      "flags_found": 2,
-      "flags_produced": 7,
+      "flags_found": 3,
+      "flags_produced": 8,
       "flags_not_in_key": [
         "missing:deck_date",
         "missing:investors",
@@ -251,7 +241,7 @@
       ],
       "by_kind": {
         "missing": [
-          2,
+          3,
           5
         ],
         "unsupported": [
@@ -268,14 +258,14 @@
         "sector: got 'saas', label 'consumer'"
       ],
       "hallucinated": [],
-      "valued": 5,
+      "valued": 4,
       "checkable": 0,
-      "unverifiable": 5,
+      "unverifiable": 4,
       "verbatim": 0,
       "rearranged": [],
       "flags_expected": 6,
-      "flags_found": 5,
-      "flags_produced": 8,
+      "flags_found": 4,
+      "flags_produced": 7,
       "flags_not_in_key": [
         "missing:deck_date",
         "missing:investors",
@@ -287,7 +277,7 @@
           4
         ],
         "contradiction": [
-          1,
+          0,
           1
         ],
         "unsupported": [

@@ -40,33 +40,107 @@ accept there may be nothing to chase — and collapsing both into null loses tha
 
 ## What it flags
 
-For now only simple flags, e.g. *"There is no revenue figure anywhere in 23
-slides"*. To avoid false positives it is kept conservative rather than clever: a
-wrong flag costs more trust than three missed ones. Work in progress.
+Two kinds. **Absences**, e.g. *"There is no revenue figure anywhere in 23
+slides"*, and **contradictions**: two figures in the same deck that cannot both
+be true, each with its page and its quote. Wunderlist claims 500,000 daily
+active users on the metrics slide and charts 450k two slides later; that is the
+sharpest question in the memo and the deck does not reconcile it.
+
+Contradictions are found inside the extraction call, not in a second pass over
+the deck. The model that read page 5 is the one that should notice page 7
+disagrees with it, and a second call would re-read all the same pages for double
+the cost. The risk is that asking for one more thing costs attention on the
+fields themselves, so the table below carries field accuracy before and after,
+not only the flag recall that went up.
+
+To avoid false positives the whole pass is kept conservative rather than clever:
+a wrong flag costs more trust than three missed ones. The rule in the prompt
+spends more words on what is *not* a contradiction — total against paying users,
+one country against worldwide, one year against another — than on what is.
 
 ## Quality
 
 Measured, not asserted. Eight hand-labelled decks in `evals/labels/`.
 
 ```bash
-python evals/run_eval.py
-python evals/run_eval.py --model claude-haiku-4-5-20251001   # comparison run
+python evals/run_eval.py --model claude-sonnet-5
+python evals/run_eval.py --model claude-opus-5-5
+python evals/run_eval.py --model claude-haiku-4-5-20251001
 ```
 
-| Model | Field accuracy | Hallucination rate | Flag recall |
-|---|---|---|---|
-| claude-sonnet-5 | **0.737** | **0.231** | 0.488 |
-| claude-haiku-4.5 | 0.684 | 0.385 | 0.488 |
+| Model | Field accuracy | Quotes verbatim | Hallucination rate | Flag recall | $ / deck |
+|---|---|---|---|---|---|
+| claude-opus-5-5 | **0.789** (30/38) | **13/13** | 0.000 | 0.488 | 0.094 |
+| claude-sonnet-5 | **0.789** (30/38) | 9/13 | 0.000 | **0.512** | 0.056 |
+| claude-haiku-4.5 | 0.711 (27/38) | 9/12 | 0.000 | 0.465 | **0.021** |
 
-38 labelled field values across 8 decks. 46 values returned, of which **13 could
-be checked** against a page with a text layer and 33 could not (see below).
+38 labelled field values across 8 decks. 46 values returned, of which **13 can
+be checked** against a page with a text layer and 33 cannot, because they were
+quoted off pages that went to the model as images.
 
-**The comparison has a clear answer, and it is not about accuracy.** Haiku is a
-fraction of the price and scores five points lower on fields, and hallucinates
-67% more. It misreads proper nouns off images and misses logos: on Rokoko it
-found 8 of 16 customer logos where sonnet found all 16. For a tool whose output
-is largely names, that is disqualifying at any price. **Run this on sonnet or
-better.**
+### The newer model did not win, and that is the result
+
+Opus 5.5 and Sonnet 5 return **exactly the same field accuracy, 30 of 38**, and
+Opus costs 1.7x more per deck. Thirty-eight values cannot separate two models
+that tie, and the flag-recall gap between them is literally one flag. Reporting
+this as "the new model is better" would be reading noise.
+
+**One difference is not noise.** Opus reproduced all 13 checkable quotes
+character for character. Sonnet managed 9 of 13 and Haiku 9 of 12; the rest were
+accurate but rearranged — every word on the page, in the order the slide's text
+boxes came out rather than the order the model wrote them. For a tool whose
+entire promise is *check this figure in two seconds*, a quote you can `Ctrl+F` is
+worth something. It does not move the hallucination rate, which is zero for all
+three.
+
+**Haiku is the one with a real gap**, and it is not in the headline number
+either: on Rokoko it found 8 of 16 customer logos where the other two found all
+16, and it misreads proper nouns off slide images — Bryter's "Mike Chalfen" came
+back as "Mike Chaifen", "Michael Mitterlehner" as "Michael Mittendorfer". For a
+tool whose output is largely names, that is disqualifying at a fifth of the
+price.
+
+**So: run it on Sonnet 5.** Reach for Opus when the provenance has to be
+literally quotable, or on decks harder than these.
+
+### Where the flags still fail
+
+Recall is 0.51 at best, and the summary now breaks it down by kind so a gain in
+one cannot hide behind the total:
+
+| Flag kind | opus | sonnet | haiku | in the key |
+|---|---|---|---|---|
+| missing | 21 | 21 | 19 | 28 |
+| contradiction | 0 | 1 | 1 | 3 |
+| unsupported | 0 | 0 | 0 | 11 |
+| unverified | 0 | 0 | 0 | 1 |
+
+**Eleven of the 43 expected flags are unsupported market claims** — *"$30bn
+SAM"* with no derivation, *"category leader"* with no share data — and all three
+models catch none of them. That is not a prompt problem. There is no market
+field in the schema for such a claim to hang on, so the flagging pass never sees
+it. It is the single biggest gap and the next honest piece of work after OCR.
+
+**Contradictions: 1 of 3, and no false ones.** All three runs find Wunderlist's
+500,000 daily active users against the 450k charted two slides later. None finds
+Heal's or Rokoko's, both of which went in as images end to end. Across all 24
+deck-runs the tool produced **zero contradiction flags that the answer key does
+not ask for** — the conservative prompt bought precision at the cost of recall,
+which is the trade this file argues for everywhere else.
+
+### Recall alone is a metric you can game
+
+Flagging everything scores perfect recall. So the run also counts the flags it
+produced that the key does **not** ask for: 20 of 41 on Opus and Sonnet, 21 of
+41 on Haiku. That is not a false-positive count — the key is one reader's list
+of what matters in a deck, not an exhaustive one — and reading them by hand is
+the point.
+
+One of them is the tool being right and the key being wrong. On Rokoko it
+reports `redacted: revenue`; the key asks for `missing: revenue`. The key's own
+note reads *"the ARR chart and the full financial projections table are all
+overlaid with 'Redacted'"* — which is the distinction `status` exists to make.
+The label is what needs changing, not the tool.
 
 ### What the answer key actually is
 
@@ -85,27 +159,41 @@ one-line descriptions of the same company rarely match as strings. Names are
 compared with accents folded, so a label typed as "Sondergaard" does not mark
 "Søndergaard" wrong.
 
-### What made claude sonnet 5 only 0.737 accurate?
+### What the eight remaining misses are
 
-Eight misses on the sonnet run, and only one is an extraction fault:
+Eight wrong fields on the Sonnet run. Read one at a time, **two are real**:
 
-- **One real model error.** Heal lists Paul Jacobs as "Chairman & Founding
-  Investor". The extractor read "Founding", put him in `founders`, and left
-  `investors` empty. One sentence in the founders description would fix it.
-- **Three are bad labels, not bad extraction.** `hypt` is labelled
-  `sector: "b2b saas"` — mixing business model with sector, the exact confusion
-  the schema is meant to prevent. `"Strategic round"` versus `"strategic"` and
-  `"seed extension round"` versus `"Seed Extension"` are the same answer with a
-  trailing noun; exact string comparison on a semi-open vocabulary is too strict
-  a test, and two of the eight misses are only that.
-- **Two are genuine disagreements.** Is Juno a marketplace or SaaS? Is Wunderlist
-  consumer or SaaS? Reasonable people differ, which says single-label `sector`
-  is a weak field. A real version would allow several tags.
-- **One is a true miss.** Sonnet returned null for hypt's location; haiku found
-  "Switzerland" on the same slide.
+- **`hypt.investors`: returned empty, the deck names seven** (Venpace, SixThirty,
+  Core Angels, Gateway Ventures, SICTIC, NCA, Swisspreneur). The `investors`
+  description spends its words on what does *not* count — press logos, customers,
+  advisors — and apparently talked the model out of the ones that do.
+- **`hypt.location`: null, and the answer is on the slide.** Haiku found
+  Switzerland on the same page. A plain miss.
 
-Most of these are ambiguous rather than wrong, and saying so in the field
-descriptions would fix part of the problem.
+**Three are `sector`, and all three are arguments rather than errors.** Is hypt
+fintech or B2B SaaS? Rokoko deeptech or SaaS? Wunderlist consumer or SaaS?
+Reasonable people differ on every one, and one-word `sector` forces a single
+answer where the honest one is two tags. Three of eight misses landing on one
+field is the field telling you it is badly specified.
+
+**Two are the scorer, not the extractor.**
+
+- `stage`: `"Seed Extension"` against a label of `"seed extension round"`. Same
+  answer, one trailing noun, exact string comparison on a half-open vocabulary.
+- `founders`: the extractor returned Pascal Sollberger, Tobias Wegmüller and
+  Roger Ellenberger. The label holds the same three people with their roles baked
+  into the strings — `"Pascal Sollberger (Co-CEO)"` — so set overlap scores zero
+  on a perfect answer. The label format is wrong, not the extraction.
+
+**One is a genuine miss on a hard page:** `Heal.users`, where the deck states
+200,000 house calls and the extractor returned null. Heal went in as 23 images
+with no text layer at all.
+
+So the honest reading of 0.789 is: **two extraction faults, one hard-page miss,
+three disputes about a field that should not be single-valued, and two scoring
+artifacts.** Fixing the scorer and splitting `sector` would move the number
+without the tool getting any better, which is worth knowing before anyone quotes
+it.
 
 ### Where the hallucination rate comes from
 
@@ -118,6 +206,32 @@ An earlier version of the harness counted every unverifiable quote as a
 hallucination and reported a rate of 92%. That number was meaningless, and the
 fix was to separate "wrong" from "cannot tell" rather than let a scary figure
 stand. OCR is the next real piece of work on this project.
+
+**The same harness was wrong a second time, in the same direction.** The check
+was `quote.lower() in page_text.lower()` — an exact substring. Two things break
+that, and neither is the model lying:
+
+- **Line breaks.** A quote running across two lines on the slide has a newline
+  in the text layer and a space in the model's answer. Three of the seven
+  flagged values were that and nothing else.
+- **Slide layout.** A slide is a grid of separate text boxes, and pdfplumber
+  emits them in its own order. hypt's metrics slide reads `$ 700k ARR` to a
+  human; the text layer has `$ 700k` in one box and `ARR` in another with half a
+  slide in between. The quote is accurate and the substring test fails.
+
+A quote now counts as supported if it is on the page verbatim, or if **every
+word of it is on the page and the value being reported is on the page too**.
+Only what fails both is a hallucination. Its weakness, stated rather than
+hidden: a quote that recombines words genuinely on the page would pass, so the
+verbatim count is reported separately and is the one to watch.
+
+Checked by hand against the cached runs afterwards, every flagged value turned
+out to be real text on the real page. **Neither model invented a single one of
+the values the harness can check.** That is a much narrower claim than it
+sounds: only 13 of 46 values are checkable at all, and the other 33 came off
+image pages where nothing can be verified. The honest sentence is *"of the
+values I can check, none were invented, and I can only check a quarter of
+them"* — which is exactly why OCR is item 1 below and not item 4.
 
 ## Problems that come up with many decks
 
@@ -161,14 +275,33 @@ office rather than a generic deck parser:**
 
 ## Design notes
 
-- **No agent framework.** One call with the whole deck under a forced schema is
+- **No agent framework.** One call with the whole deck against one tool schema is
   easier to read and debug than a graph, and nothing here needs one.
+- **The tool is asked for, not forced.** The call used
+  `tool_choice={"type": "tool"}` until Opus 5.5, which rejects forced tool use
+  with a 400. The documented replacement is strict tool use, and this schema
+  cannot take it as written: strict allows 16 union-typed parameters and the
+  schema has 25, because every optional value is `["string", "null"]`. Making
+  those optional-instead-of-nullable is the honest fix and it is a schema
+  decision, so for now the call uses `tool_choice: auto` with the prompt naming
+  the tool.
+- **One retry when the model answers in prose.** Asking for a tool is not
+  forcing it, so a failure mode that forced tool use had closed is open again.
+  It is not theoretical: Opus 5.5 did it on Wunderlist, wrote a good summary in
+  prose and returned nothing the pipeline could use. The retry hands the model
+  its own prose back and asks for the same reading through the tool. Retries are
+  counted in the run summary, because a run that needed three is not the same
+  result as a run that needed none.
 - **No vector database.** The corpus is one deck plus a thesis file. Retrieval
   over eight documents is a `for` loop; reaching for RAG here would be
   decoration.
 - **Graphic pages go in as images.** Most decks are almost entirely graphics, so
   pages with a thin text layer are rasterised and everything else stays text.
-  Every deck in this set went in fully as images.
+  In this set that means **96 of 120 pages went in as images**, and six of the
+  eight decks went in with no text at all. All 24 text pages belong to two decks,
+  hypt (11 of 12) and langfuse (13 of 15) — which is why every checkable quote in
+  the table below comes from those two, and why the hallucination rate is
+  measured on so few values.
 - **The thesis is data, not code** (`thesis.yaml`), so the tool works for a
   different mandate without touching the source.
 - **Rules live in the schema where a schema can hold them.** `status` is an
@@ -183,17 +316,22 @@ office rather than a generic deck parser:**
 1. **OCR the rasterised pages**, so quoted provenance becomes checkable on the
    72% of values that currently cannot be verified. This is the single change
    that would make the headline metric mean something.
-2. **Contradiction detection** in `flags.py`, with the Wunderlist 500k/450k
-   discrepancy as the first test case.
-3. **JPEG instead of PNG for page images.** Bryter uploads 5.3 MB as PNG; JPEG
+2. **A `market_claims` field**, so the eleven unsupported market claims in the
+   answer key have somewhere to land. Right now the flagging pass cannot see
+   them at all and scores 0 of 11 on every model — the largest single gap in
+   flag recall, and a schema gap rather than a prompt one.
+3. **Strict tool use**, which means reworking nullability in the schema so the
+   union count drops below 16. That would move schema conformance from "the
+   model complied" to "the decoder could not have done otherwise."
+4. **JPEG instead of PNG for page images.** Bryter uploads 5.3 MB as PNG; JPEG
    at quality 80 would be several times smaller for no visible loss on a slide,
    cutting cost and latency across every run.
-4. **A `founded` field, and multi-tag `sector`.** Company age is stated far more
+5. **A `founded` field, and multi-tag `sector`.** Company age is stated far more
    often than a deck date, and one sector label per company is demonstrably too
    few.
-5. **More decks, chosen for difficulty** rather than count — scans, German-language
+6. **More decks, chosen for difficulty** rather than count — scans, German-language
    decks, decks with dense financial tables.
-6. **Deploy it** behind the existing FastAPI wrapper so it can be used without a
+7. **Deploy it** behind the existing FastAPI wrapper so it can be used without a
    terminal.
 
 ## Layout

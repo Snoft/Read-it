@@ -71,10 +71,20 @@ ASK = {
 def _questions(flags: list, limit: int = 3) -> list[str]:
     """Highest severity first, deduplicated, at most `limit`."""
     order = {"high": 0, "medium": 1, "low": 2}
+    # Contradictions outrank the missing-field questions even at the same
+    # severity. "You give two different user numbers, which is current" is a
+    # question only someone who read the deck can ask; "how many users do you
+    # have" is one anybody asks. Only three questions fit on the page.
     seen, out = set(), []
-    for f in sorted(flags, key=lambda f: order.get(f.severity, 3)):
+    for f in sorted(flags, key=lambda f: (f.kind != "contradiction", order.get(f.severity, 3))):
         if f.kind == "redacted":
             q = f"Can you share the unredacted {str(f.field).replace('_', ' ')} figure?"
+        elif f.kind == "contradiction":
+            # The generic "how many users do you have" wastes the best question in
+            # the memo. Two numbers that disagree is the sharpest thing on the page.
+            where = " and ".join(f"p{p}" for p in f.pages) if f.pages else "two slides"
+            q = (f"The deck gives two different {str(f.field or 'figures').replace('_', ' ')} "
+                 f"figures ({where}). Which is current, and what explains the gap?")
         else:
             q = ASK.get(f.field)
         if q and q not in seen:

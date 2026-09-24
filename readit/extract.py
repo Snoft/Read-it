@@ -15,6 +15,27 @@ MODEL = "claude-sonnet-5"
 MAX_PAGES = 30          # decks longer than this get truncated; say so in the README
 MAX_TOKENS = 8000
 
+# Dollars per million tokens, in / out. Checked against the pricing page on
+# 24 Sep 2026. Only used to put a cost on the eval run; if a price moves, the
+# old results files keep the number they were computed with.
+PRICES = {
+    "claude-opus-5-5":           (4.0, 20.0),
+    "claude-sonnet-5":           (2.0, 10.0),
+    "claude-haiku-4-5-20251001": (1.0,  5.0),
+}
+
+# Opus 5.5 always thinks, the thinking is billed as output, and it counts
+# against max_tokens. 8000 is enough for the tool call alone but not for the
+# thinking in front of it, so that model gets more room.
+MAX_TOKENS_BY_MODEL = {"claude-opus-5-5": 24000}
+
+
+def cost(model: str, tokens_in: int, tokens_out: int) -> float:
+    price = PRICES.get(model)
+    if not price:
+        return 0.0
+    return tokens_in / 1e6 * price[0] + tokens_out / 1e6 * price[1]
+
 _client = None
 
 
@@ -89,6 +110,40 @@ def _metric(desc):
             "required": ["value", "confidence", "status"]}
 
 
+def _claim():
+    """One side of a contradiction: what the deck says, where, in its own words."""
+    return {
+        "type": "object",
+        "properties": {
+            "text": {"type": "string", "description": "the figure as the deck writes it, e.g. '500,000 daily active users'"},
+            "page": {"type": "integer"},
+            "source_quote": {"type": "string", "description": "the exact words on that page, copied character for character"},
+        },
+        "required": ["text", "page", "source_quote"],
+    }
+
+
+def _contradiction():
+    return {
+        "type": "object",
+        "properties": {
+            "about": {
+                "type": "string",
+                "enum": ["revenue", "growth", "users", "customers", "round_size",
+                         "valuation", "founders", "market", "metrics"],
+                "description": ("which field the two figures belong to. Use metrics for "
+                                "operational numbers that are none of the others, such as "
+                                "a reduction in hospital visits or a conversion rate."),
+            },
+            "quantity": {"type": "string", "description": "what both figures claim to measure, in the deck's own words"},
+            "first": _claim(),
+            "second": _claim(),
+            "note": {"type": "string", "description": "one sentence naming both figures and where they sit, that a reader can put to the founder"},
+        },
+        "required": ["about", "quantity", "first", "second", "note"],
+    }
+
+
 TOOL = {
     "name": "record_extraction",
     "description": "Record what this pitch deck states. Call exactly once.",
@@ -132,8 +187,14 @@ TOOL = {
                              "revenue", "growth", "users", "round_size", "valuation",
                              "customers", "competitors", "investors"],
             },
+            "contradictions": {
+                "type": "array",
+                "items": _contradiction(),
+                "description": ("pairs of figures in THIS deck that cannot both be true. "
+                                "Empty list is the normal answer. See rule 7."),
+            },
         },
-        "required": ["company", "fields"],
+        "required": ["company", "fields", "contradictions"],
     },
 }
 
@@ -148,7 +209,8 @@ TOOL = {
 
 PROMPT = """You are reading a startup pitch deck for an investor who will check every number you report.
 
-Fill in the record_extraction tool from what this deck states.
+Answer by calling the record_extraction tool, exactly once. Everything you have
+to report goes in that call; do not reply in prose.
 
 Rules, in order of importance:
 
@@ -174,6 +236,15 @@ Rules, in order of importance:
    round size or a date that the slides themselves never state. Read only what
    is on the pages.
 
+7. Contradictions are reported only when the deck gives two figures for the same
+   quantity that cannot both be true, and you can quote both. Figures that
+   measure different things are not contradictions: total users against paying
+   users, one country against worldwide, one year against another, a number you
+   read off a chart against a headline. If you need a sentence explaining how
+   both might still be true, it is not a contradiction. An empty list is the
+   normal and expected answer. A wrong contradiction costs the reader more trust
+   than three missed ones.
+
 Report only the company's own facts. Market size, competitor revenue and
 industry statistics are not this company's numbers.
 """
@@ -194,6 +265,19 @@ def _blocks(deck: Deck) -> list[dict]:
     return out
 
 
+def _tool_block(resp):
+    """Select by type, never by position: on a thinking model the first block is
+    a thinking block, so resp.content[0] is not the answer."""
+    for block in resp.content:
+        if block.type == "tool_use":
+            return block
+    return None
+
+
+def _said(resp) -> str:
+    return " ".join(b.text for b in resp.content if b.type == "text").strip()
+
+
 @cached
 def _call(deck_path: str, model: str, prompt: str, tool_json: str, blocks_json: str) -> dict:
     """tool_json is in the signature purely so it lands in the cache key.
@@ -202,22 +286,67 @@ def _call(deck_path: str, model: str, prompt: str, tool_json: str, blocks_json: 
     with edited descriptions must be a cache miss. Leaving it out means editing
     a description, re-running, seeing the old answer, and concluding the edit
     did nothing."""
-    resp = client().messages.create(
-        model=model,
-        max_tokens=MAX_TOKENS,
-        system=prompt,
-        tools=[TOOL],
-        tool_choice={"type": "tool", "name": "record_extraction"},
-        messages=[{"role": "user", "content": json.loads(blocks_json)}],
-    )
-    for block in resp.content:
-        if block.type == "tool_use":
-            return {"extraction": block.input,
-                    "usage": {"in": resp.usage.input_tokens, "out": resp.usage.output_tokens}}
-    raise RuntimeError(f"model did not call the tool; stop_reason={resp.stop_reason}")
+    blocks = json.loads(blocks_json)
+    # tool_choice is "auto", not {"type": "tool", ...}: Opus 5.5 rejects forced
+    # tool use with a 400. The documented replacement is strict tool use, which
+    # this schema cannot take as written -- strict allows 16 union-typed
+    # parameters and the schema has 25, because every optional value is
+    # ["string", "null"]. Reworking nullability is the real fix and it is a
+    # schema decision, not a call-site one.
+    kw = dict(model=model,
+              max_tokens=MAX_TOKENS_BY_MODEL.get(model, MAX_TOKENS),
+              system=prompt,
+              tools=[TOOL],
+              tool_choice={"type": "auto"})
+
+    def ask(messages):
+        # Streamed, not to show output as it arrives but because the SDK refuses
+        # a non-streaming request whose max_tokens implies it could run past ten
+        # minutes. On a thinking model with 24000 tokens that is every call, and
+        # the first Opus 5.5 run died on it. get_final_message() hands back the
+        # same Message the non-streaming call returned.
+        with client().messages.stream(messages=messages, **kw) as stream:
+            return stream.get_final_message()
+
+    resp = ask([{"role": "user", "content": blocks}])
+    tin, tout = resp.usage.input_tokens, resp.usage.output_tokens
+    tool, retries = _tool_block(resp), 0
+
+    if tool is None:
+        # Asking for the tool is not the same as forcing it, so "the model
+        # answered in prose" is a live failure mode again rather than a
+        # theoretical one: Opus 5.5 did exactly this on Wunderlist, wrote a
+        # perfectly good summary, and returned nothing the pipeline could use.
+        # One retry, handing the model its own prose back and asking it to put
+        # the same reading through the tool. Retries are counted and reported,
+        # because a run that needed three of them is not the same result as a
+        # run that needed none.
+        retries = 1
+        resp2 = ask([
+            {"role": "user", "content": blocks},
+            {"role": "assistant", "content": _said(resp) or "(no text)"},
+            {"role": "user", "content":
+                "You answered in prose instead of calling the tool. Record that "
+                "same reading now by calling record_extraction. Do not reply in "
+                "prose."},
+        ])
+        tin += resp2.usage.input_tokens
+        tout += resp2.usage.output_tokens
+        tool = _tool_block(resp2)
+        resp = resp2
+
+    if tool is None:
+        raise RuntimeError(
+            f"model did not call the tool, even after a retry; "
+            f"stop_reason={resp.stop_reason}; said: {_said(resp)[:200]!r}")
+
+    return {"extraction": tool.input,
+            "usage": {"in": tin, "out": tout,
+                      "usd": round(cost(model, tin, tout), 4),
+                      "retries": retries}}
 
 
-def extract(deck: Deck, model: str = MODEL) -> dict:
+def extract(deck: Deck, model: str = MODEL, with_usage: bool = False) -> dict:
     blocks_json = json.dumps(_blocks(deck))
     images = sum(1 for p in deck.pages[:MAX_PAGES] if p.image_b64)
     mb = len(blocks_json) / 1_048_576
@@ -227,5 +356,9 @@ def extract(deck: Deck, model: str = MODEL) -> dict:
         print(f"   {deck.path.name}: uploading {mb:.1f} MB ({images} page images), this takes a moment...")
     result = _call(str(deck.path), model, PROMPT, json.dumps(TOOL, sort_keys=True), blocks_json)
     u = result.get("usage", {})
-    print(f"   {deck.path.name}: {u.get('in', '?')} in / {u.get('out', '?')} out")
+    retry = "  (retried: answered in prose first)" if u.get("retries") else ""
+    print(f"   {deck.path.name}: {u.get('in', '?')} in / {u.get('out', '?')} out"
+          f" / ${u.get('usd', 0):.4f}{retry}")
+    if with_usage:
+        return result["extraction"], u
     return result["extraction"]

@@ -3,10 +3,12 @@
 Extraction is a commodity. "There is no revenue figure anywhere in 23 slides"
 is the sentence that saves a reader ten minutes, and this file produces it.
 
-Contradiction detection is deliberately NOT here. Three decks in the set
-contradict themselves, so the test cases exist, but a false contradiction costs
-more trust than three missed ones and doing it properly needs more than a day.
-That decision is recorded in the README rather than hidden as an omission.
+Contradiction detection was deliberately left out of the first version, because a
+false contradiction costs more trust than three missed ones. It is in now, but
+the caution stands: it is detected inside the extraction call, where the model
+already has every page, and the prompt spends more words on what is NOT a
+contradiction than on what is. Whether it cost extraction accuracy is a number in
+the README, not an opinion.
 """
 from dataclasses import dataclass
 
@@ -15,7 +17,7 @@ from readit.ingest import Deck
 
 @dataclass
 class Flag:
-    kind: str        # missing | redacted | unsupported | thesis_gap
+    kind: str        # missing | redacted | unsupported | contradiction | thesis_gap
     field: str | None
     message: str     # one plain sentence a reader can act on
     pages: list[int]
@@ -86,7 +88,29 @@ def find_flags(deck: Deck, extraction: dict, thesis: dict) -> list[Flag]:
         flags.append(Flag("missing", "traction", msg, [], sev))
 
     flags.extend(_unsupported(extraction))
+    flags.extend(_contradictions(extraction))
     return flags
+
+
+def _contradictions(extraction: dict) -> list[Flag]:
+    """Two figures in the same deck that cannot both be true.
+
+    The pair comes back from the extraction call rather than from a second pass
+    over the deck. A second call would re-read the same pages and roughly double
+    the cost of a screening, and the model that read page 5 is the one that
+    should notice page 7 disagrees with it. The risk is that asking for one more
+    thing costs attention on the fields, which is why the README carries the
+    before-and-after accuracy and not just the new flag recall.
+    """
+    out: list[Flag] = []
+    for c in extraction.get("contradictions") or []:
+        a, b = c.get("first") or {}, c.get("second") or {}
+        pages = [p for p in (a.get("page"), b.get("page")) if isinstance(p, int)]
+        note = c.get("note") or (
+            f"The deck gives two figures for {c.get('quantity', 'the same thing')}: "
+            f"{a.get('text')} and {b.get('text')}.")
+        out.append(Flag("contradiction", c.get("about"), note, pages, "high"))
+    return out
 
 
 def _unsupported(extraction: dict) -> list[Flag]:
