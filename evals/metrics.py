@@ -60,11 +60,13 @@ def quote_status(quote: str, value, page_text: str) -> str:
     `absent` is the only one that means the model made something up, and it is
     what the hallucination rate counts.
 
-    A slide is a grid of separate text boxes. pdfplumber emits them in its own
-    order, so "$ 700k ARR" -- which a human reads in one glance -- comes out of
-    the text layer as "$ 700k" in one box and "ARR" in another, with half a
-    slide in between. Scoring that as a hallucination is how this harness
-    reported 53.8% on a run that invented nothing at all.
+    pdfplumber reads a page line by line across its full width, not box by box.
+    A slide of metric tiles -- big number over small label, three tiles side by
+    side -- therefore comes out as all three numbers on one line and all three
+    labels on the next. hypt's "$ 700k" and "ARR" sit in the same tile, but in
+    the text layer "$ 700k" is followed by the next tile's "$ 30'000". Scoring
+    that as a hallucination is how this harness reported 53.8% on a run that
+    invented nothing at all.
 
     So `rearranged` requires two things at once: every word of the quote is on
     the page, AND the value being reported is on the page. Its weakness, stated

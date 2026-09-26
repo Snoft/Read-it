@@ -214,10 +214,15 @@ that, and neither is the model lying:
 - **Line breaks.** A quote running across two lines on the slide has a newline
   in the text layer and a space in the model's answer. Three of the seven
   flagged values were that and nothing else.
-- **Slide layout.** A slide is a grid of separate text boxes, and pdfplumber
-  emits them in its own order. hypt's metrics slide reads `$ 700k ARR` to a
-  human; the text layer has `$ 700k` in one box and `ARR` in another with half a
-  slide in between. The quote is accurate and the substring test fails.
+- **Slide layout.** hypt's traction slide is a grid of metric tiles, each a big
+  number over a small label. pdfplumber reads the page line by line across its
+  full width, not tile by tile, so the three big numbers come out as one line —
+  `$ 700k $ 30'000 $ 113'000` — and their three labels as the next: `ARR ø ACV
+  ...`. In the text layer `$ 700k` is followed by the neighbouring tile's number,
+  not by its own label, although both sit in the same box on the slide. The
+  quote is accurate and the substring test fails. (The first version of this
+  explanation said the two were in separate boxes. Opening the page showed they
+  are not, and the real cause is the reading order.)
 
 A quote now counts as supported if it is on the page verbatim, or if **every
 word of it is on the page and the value being reported is on the page too**.
