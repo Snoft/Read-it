@@ -83,8 +83,9 @@ def _questions(flags: list, limit: int = 3) -> list[str]:
             # The generic "how many users do you have" wastes the best question in
             # the memo. Two numbers that disagree is the sharpest thing on the page.
             where = " and ".join(f"p{p}" for p in f.pages) if f.pages else "two slides"
-            q = (f"The deck gives two different {str(f.field or 'figures').replace('_', ' ')} "
-                 f"figures ({where}). Which is current, and what explains the gap?")
+            what = str(f.field or "the same figure").replace("_", " ")
+            q = (f"The deck gives two different figures for {what} ({where}). "
+                 f"Which is current, and what explains the gap?")
         else:
             q = ASK.get(f.field)
         if q and q not in seen:

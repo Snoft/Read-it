@@ -10,6 +10,7 @@ deck never says, and a fit score against a written investment thesis.
 pip install -r requirements.txt
 cp .env.example .env          # add your key
 python -m readit.cli screen evals/decks/<deck>.pdf
+python -m readit.cli screen evals/decks/<deck>.pdf --html   # same memo as a page; every page number opens the slide
 python evals/review.py bryter   # extraction next to its label, field by field
 ```
 
@@ -93,12 +94,13 @@ entire promise is *check this figure in two seconds*, a quote you can `Ctrl+F` i
 worth something. It does not move the hallucination rate, which is zero for all
 three.
 
-**Haiku is the one with a real gap**, and it is not in the headline number
-either: on Rokoko it found 8 of 16 customer logos where the other two found all
-16, and it misreads proper nouns off slide images — Bryter's "Mike Chalfen" came
-back as "Mike Chaifen", "Michael Mitterlehner" as "Michael Mittendorfer". For a
-tool whose output is largely names, that is disqualifying at a fifth of the
-price.
+**Haiku's gap is in the names**, not in the headline number. It misreads proper
+nouns off slide images — Bryter's "Mike Chalfen" came back as "Mike Chaifen",
+"Michael Mitterlehner" as "Michael Mittendorfer". On Rokoko it read 8 of the 16
+labelled customer logos where the other two read 10; none of the three found
+the remaining six (Tesla, Volkswagen, Mercedes-Benz, BMW, Ford, Copenhagen
+Municipality). For a tool whose output is largely names, getting them wrong is
+the failure that matters, and 2 cents a deck instead of 6 does not buy it back.
 
 **So: run it on Sonnet 5.** Reach for Opus when the provenance has to be
 literally quotable, or on decks harder than these.
@@ -347,6 +349,7 @@ readit/extract.py   pages -> structured fields with provenance
 readit/flags.py     what the deck does not say
 readit/score.py     thesis fit, with reasons
 readit/memo.py      the one page a human reads
+readit/memo_html.py the same memo as one HTML page, sources as links to the page
 readit/cache.py     disk cache for model calls
 evals/review.py     one deck, extraction against label
 evals/run_eval.py   all decks, the numbers above
