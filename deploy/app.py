@@ -1,4 +1,6 @@
-"""Day 6. Upload a deck, get the memo. FastAPI + one template, no JS build step.
+"""Upload a deck, get the memo. FastAPI with one inline template, no JS build step.
+
+Written but not deployed; DEPLOY.md is the runbook for when it is.
 
     uvicorn deploy.app:app --reload    then http://localhost:8000
 """

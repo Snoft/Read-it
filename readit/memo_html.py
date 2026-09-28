@@ -1,13 +1,11 @@
-"""The memo as a page, with every figure one click away from the slide it came from.
+"""The memo as a single HTML page, with every page number linking to that page of the deck.
 
-memo.py writes the memo as text for a terminal. This writes the same memo as a
-single HTML file: same fields, same flags, same questions, same score. The only
-thing it adds is the one thing a terminal cannot do -- each page number is a
-link that opens the deck at that page. "Check any figure in two seconds" stops
-being a claim in the README and becomes something the reader does.
+Same content as memo.py: fields, flags, questions, score. The addition is that
+each source is a link that opens the PDF at the cited page, so a figure can be
+checked against its slide directly.
 
 Everything the model returned is escaped before it goes on the page. A deck is
-untrusted input; its text must never become markup.
+untrusted input and its text must never become markup.
 """
 import datetime as _dt
 import html as _h

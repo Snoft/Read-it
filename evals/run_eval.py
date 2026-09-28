@@ -1,8 +1,10 @@
-"""python evals/run_eval.py            -> the table that goes in the README
-   python evals/run_eval.py --model gpt-4.1   -> the comparison run
+"""Run the whole eval for one model.
 
-Reads every evals/labels/*.json, finds the deck it names in evals/decks/,
-runs the pipeline, prints the summary and writes evals/results-<model>.json.
+    python evals/run_eval.py --model claude-sonnet-5
+    python evals/run_eval.py --model claude-opus-5-5 --only rokoko
+
+Reads every evals/labels/*.json, finds the deck it names in evals/decks/, runs
+the pipeline, prints the summary and writes evals/results-<model>.json.
 """
 import argparse
 import json

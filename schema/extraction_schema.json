@@ -1,71 +1,780 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Readit extraction",
-  "description": "Every extracted value carries where it came from. A field with a value and no verifiable source_quote counts as a hallucination in the eval.",
   "type": "object",
-  "required": ["company", "fields"],
   "properties": {
-    "company": { "type": "string" },
+    "company": {
+      "type": "string",
+      "description": "company name AS THE DECK SPELLS IT, not as the filename does"
+    },
     "fields": {
       "type": "object",
       "properties": {
-        "one_liner":    { "$ref": "#/definitions/field" },
-        "sector":       { "$ref": "#/definitions/field" },
-        "stage":        { "$ref": "#/definitions/field" },
-        "location":     { "$ref": "#/definitions/field" },
-        "founders":     { "$ref": "#/definitions/field_list" },
-        "revenue":      { "$ref": "#/definitions/metric" },
-        "growth":       { "$ref": "#/definitions/metric" },
-        "users":        { "$ref": "#/definitions/metric" },
-        "round_size":   { "$ref": "#/definitions/metric" },
-        "valuation":    { "$ref": "#/definitions/metric" },
-        "customers":    { "$ref": "#/definitions/field_list" },
-        "competitors":  { "$ref": "#/definitions/field_list" }
+        "one_liner": {
+          "type": "object",
+          "description": "what the company does, in one line, taken from the deck",
+          "properties": {
+            "value": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "confidence": {
+              "type": "number"
+            },
+            "provenance": {
+              "type": "object",
+              "properties": {
+                "page": {
+                  "type": "integer",
+                  "description": "page number the value came from"
+                },
+                "source_quote": {
+                  "type": "string",
+                  "description": "the exact words on that page, copied character for character"
+                }
+              },
+              "required": [
+                "page",
+                "source_quote"
+              ]
+            }
+          },
+          "required": [
+            "value",
+            "confidence"
+          ]
+        },
+        "deck_date": {
+          "type": "object",
+          "description": "the date THIS DECK states for itself: a date on the cover, in a footer, in a running header, or an 'as of <month year>' line. Format it as the deck writes it. This is NOT the founding date of the company, NOT the date of a funding round, NOT a copyright line such as '(c) 2020', and NOT the newest year appearing on a timeline or roadmap chart. Most decks never date themselves: if it is not stated, null. An inferred date is worse than none, because the whole purpose of this field is telling a reader how stale the deck is.",
+          "properties": {
+            "value": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "confidence": {
+              "type": "number"
+            },
+            "provenance": {
+              "type": "object",
+              "properties": {
+                "page": {
+                  "type": "integer",
+                  "description": "page number the value came from"
+                },
+                "source_quote": {
+                  "type": "string",
+                  "description": "the exact words on that page, copied character for character"
+                }
+              },
+              "required": [
+                "page",
+                "source_quote"
+              ]
+            }
+          },
+          "required": [
+            "value",
+            "confidence"
+          ]
+        },
+        "sector": {
+          "type": "object",
+          "description": "one lowercase word: saas, fintech, healthtech, deeptech, marketplace, consumer, edtech, proptech",
+          "properties": {
+            "value": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "confidence": {
+              "type": "number"
+            },
+            "provenance": {
+              "type": "object",
+              "properties": {
+                "page": {
+                  "type": "integer",
+                  "description": "page number the value came from"
+                },
+                "source_quote": {
+                  "type": "string",
+                  "description": "the exact words on that page, copied character for character"
+                }
+              },
+              "required": [
+                "page",
+                "source_quote"
+              ]
+            }
+          },
+          "required": [
+            "value",
+            "confidence"
+          ]
+        },
+        "stage": {
+          "type": "object",
+          "description": "funding stage or round name, e.g. pre-seed, seed, series a, strategic, bridge. Decks often show a funding history or a roadmap of rounds they plan to raise later, those are not the current raise. If several rounds appear, take the one being asked for now. If you cannot tell which is current, null.",
+          "properties": {
+            "value": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "confidence": {
+              "type": "number"
+            },
+            "provenance": {
+              "type": "object",
+              "properties": {
+                "page": {
+                  "type": "integer",
+                  "description": "page number the value came from"
+                },
+                "source_quote": {
+                  "type": "string",
+                  "description": "the exact words on that page, copied character for character"
+                }
+              },
+              "required": [
+                "page",
+                "source_quote"
+              ]
+            }
+          },
+          "required": [
+            "value",
+            "confidence"
+          ]
+        },
+        "location": {
+          "type": "object",
+          "description": "HQ city or country, only if the deck states it",
+          "properties": {
+            "value": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "confidence": {
+              "type": "number"
+            },
+            "provenance": {
+              "type": "object",
+              "properties": {
+                "page": {
+                  "type": "integer",
+                  "description": "page number the value came from"
+                },
+                "source_quote": {
+                  "type": "string",
+                  "description": "the exact words on that page, copied character for character"
+                }
+              },
+              "required": [
+                "page",
+                "source_quote"
+              ]
+            }
+          },
+          "required": [
+            "value",
+            "confidence"
+          ]
+        },
+        "founders": {
+          "type": "object",
+          "description": "people the deck presents as founders or the team, by name",
+          "properties": {
+            "value": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "confidence": {
+              "type": "number"
+            },
+            "provenance": {
+              "type": "object",
+              "properties": {
+                "page": {
+                  "type": "integer",
+                  "description": "page number the value came from"
+                },
+                "source_quote": {
+                  "type": "string",
+                  "description": "the exact words on that page, copied character for character"
+                }
+              },
+              "required": [
+                "page",
+                "source_quote"
+              ]
+            }
+          },
+          "required": [
+            "value",
+            "confidence"
+          ]
+        },
+        "revenue": {
+          "type": "object",
+          "description": "revenue, ARR or MRR",
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": [
+                "stated",
+                "redacted",
+                "absent"
+              ],
+              "description": "stated: the deck gives the figure and you have read it. redacted: the deck has a slide for this figure but the number is blacked out, blurred, greyed or replaced with XXX, so it exists and is being withheld. absent: the deck never raises this figure at all. Redacted and absent mean opposite things to a reader: the first says ask for the unredacted version, the second says there may be nothing to ask for. Never use stated for a number you inferred."
+            },
+            "value": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "description": "the bare number, fully expanded: 300k is 300000. null unless status is stated"
+            },
+            "unit": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "EUR, USD, percent, count"
+            },
+            "period": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "ARR, MRR, FY2025, QoQ"
+            },
+            "as_of": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "the date or quarter the figure describes"
+            },
+            "confidence": {
+              "type": "number"
+            },
+            "provenance": {
+              "type": "object",
+              "properties": {
+                "page": {
+                  "type": "integer",
+                  "description": "page number the value came from"
+                },
+                "source_quote": {
+                  "type": "string",
+                  "description": "the exact words on that page, copied character for character"
+                }
+              },
+              "required": [
+                "page",
+                "source_quote"
+              ]
+            }
+          },
+          "required": [
+            "value",
+            "confidence",
+            "status"
+          ]
+        },
+        "growth": {
+          "type": "object",
+          "description": "a growth rate or multiple",
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": [
+                "stated",
+                "redacted",
+                "absent"
+              ],
+              "description": "stated: the deck gives the figure and you have read it. redacted: the deck has a slide for this figure but the number is blacked out, blurred, greyed or replaced with XXX, so it exists and is being withheld. absent: the deck never raises this figure at all. Redacted and absent mean opposite things to a reader: the first says ask for the unredacted version, the second says there may be nothing to ask for. Never use stated for a number you inferred."
+            },
+            "value": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "description": "the bare number, fully expanded: 300k is 300000. null unless status is stated"
+            },
+            "unit": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "EUR, USD, percent, count"
+            },
+            "period": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "ARR, MRR, FY2025, QoQ"
+            },
+            "as_of": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "the date or quarter the figure describes"
+            },
+            "confidence": {
+              "type": "number"
+            },
+            "provenance": {
+              "type": "object",
+              "properties": {
+                "page": {
+                  "type": "integer",
+                  "description": "page number the value came from"
+                },
+                "source_quote": {
+                  "type": "string",
+                  "description": "the exact words on that page, copied character for character"
+                }
+              },
+              "required": [
+                "page",
+                "source_quote"
+              ]
+            }
+          },
+          "required": [
+            "value",
+            "confidence",
+            "status"
+          ]
+        },
+        "users": {
+          "type": "object",
+          "description": "users, customers, downloads or similar count",
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": [
+                "stated",
+                "redacted",
+                "absent"
+              ],
+              "description": "stated: the deck gives the figure and you have read it. redacted: the deck has a slide for this figure but the number is blacked out, blurred, greyed or replaced with XXX, so it exists and is being withheld. absent: the deck never raises this figure at all. Redacted and absent mean opposite things to a reader: the first says ask for the unredacted version, the second says there may be nothing to ask for. Never use stated for a number you inferred."
+            },
+            "value": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "description": "the bare number, fully expanded: 300k is 300000. null unless status is stated"
+            },
+            "unit": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "EUR, USD, percent, count"
+            },
+            "period": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "ARR, MRR, FY2025, QoQ"
+            },
+            "as_of": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "the date or quarter the figure describes"
+            },
+            "confidence": {
+              "type": "number"
+            },
+            "provenance": {
+              "type": "object",
+              "properties": {
+                "page": {
+                  "type": "integer",
+                  "description": "page number the value came from"
+                },
+                "source_quote": {
+                  "type": "string",
+                  "description": "the exact words on that page, copied character for character"
+                }
+              },
+              "required": [
+                "page",
+                "source_quote"
+              ]
+            }
+          },
+          "required": [
+            "value",
+            "confidence",
+            "status"
+          ]
+        },
+        "round_size": {
+          "type": "object",
+          "description": "how much is being raised",
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": [
+                "stated",
+                "redacted",
+                "absent"
+              ],
+              "description": "stated: the deck gives the figure and you have read it. redacted: the deck has a slide for this figure but the number is blacked out, blurred, greyed or replaced with XXX, so it exists and is being withheld. absent: the deck never raises this figure at all. Redacted and absent mean opposite things to a reader: the first says ask for the unredacted version, the second says there may be nothing to ask for. Never use stated for a number you inferred."
+            },
+            "value": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "description": "the bare number, fully expanded: 300k is 300000. null unless status is stated"
+            },
+            "unit": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "EUR, USD, percent, count"
+            },
+            "period": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "ARR, MRR, FY2025, QoQ"
+            },
+            "as_of": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "the date or quarter the figure describes"
+            },
+            "confidence": {
+              "type": "number"
+            },
+            "provenance": {
+              "type": "object",
+              "properties": {
+                "page": {
+                  "type": "integer",
+                  "description": "page number the value came from"
+                },
+                "source_quote": {
+                  "type": "string",
+                  "description": "the exact words on that page, copied character for character"
+                }
+              },
+              "required": [
+                "page",
+                "source_quote"
+              ]
+            }
+          },
+          "required": [
+            "value",
+            "confidence",
+            "status"
+          ]
+        },
+        "valuation": {
+          "type": "object",
+          "description": "pre- or post-money valuation",
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": [
+                "stated",
+                "redacted",
+                "absent"
+              ],
+              "description": "stated: the deck gives the figure and you have read it. redacted: the deck has a slide for this figure but the number is blacked out, blurred, greyed or replaced with XXX, so it exists and is being withheld. absent: the deck never raises this figure at all. Redacted and absent mean opposite things to a reader: the first says ask for the unredacted version, the second says there may be nothing to ask for. Never use stated for a number you inferred."
+            },
+            "value": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "description": "the bare number, fully expanded: 300k is 300000. null unless status is stated"
+            },
+            "unit": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "EUR, USD, percent, count"
+            },
+            "period": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "ARR, MRR, FY2025, QoQ"
+            },
+            "as_of": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "the date or quarter the figure describes"
+            },
+            "confidence": {
+              "type": "number"
+            },
+            "provenance": {
+              "type": "object",
+              "properties": {
+                "page": {
+                  "type": "integer",
+                  "description": "page number the value came from"
+                },
+                "source_quote": {
+                  "type": "string",
+                  "description": "the exact words on that page, copied character for character"
+                }
+              },
+              "required": [
+                "page",
+                "source_quote"
+              ]
+            }
+          },
+          "required": [
+            "value",
+            "confidence",
+            "status"
+          ]
+        },
+        "customers": {
+          "type": "object",
+          "description": "customers named or shown as logos",
+          "properties": {
+            "value": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "confidence": {
+              "type": "number"
+            },
+            "provenance": {
+              "type": "object",
+              "properties": {
+                "page": {
+                  "type": "integer",
+                  "description": "page number the value came from"
+                },
+                "source_quote": {
+                  "type": "string",
+                  "description": "the exact words on that page, copied character for character"
+                }
+              },
+              "required": [
+                "page",
+                "source_quote"
+              ]
+            }
+          },
+          "required": [
+            "value",
+            "confidence"
+          ]
+        },
+        "competitors": {
+          "type": "object",
+          "description": "competitors named as companies, not as categories",
+          "properties": {
+            "value": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "confidence": {
+              "type": "number"
+            },
+            "provenance": {
+              "type": "object",
+              "properties": {
+                "page": {
+                  "type": "integer",
+                  "description": "page number the value came from"
+                },
+                "source_quote": {
+                  "type": "string",
+                  "description": "the exact words on that page, copied character for character"
+                }
+              },
+              "required": [
+                "page",
+                "source_quote"
+              ]
+            }
+          },
+          "required": [
+            "value",
+            "confidence"
+          ]
+        },
+        "investors": {
+          "type": "object",
+          "description": "funds, angel networks and individual people the deck names as ALREADY INVESTED in this company, usually under a heading like 'Investors' or 'Backed by'. Named individual angels count. Do NOT include: press or media logos, customer logos under headings like 'Trusted by', partners or suppliers, accelerators, or advisors and board members unless the deck states that they invested. If no investors are named, empty list.",
+          "properties": {
+            "value": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "confidence": {
+              "type": "number"
+            },
+            "provenance": {
+              "type": "object",
+              "properties": {
+                "page": {
+                  "type": "integer",
+                  "description": "page number the value came from"
+                },
+                "source_quote": {
+                  "type": "string",
+                  "description": "the exact words on that page, copied character for character"
+                }
+              },
+              "required": [
+                "page",
+                "source_quote"
+              ]
+            }
+          },
+          "required": [
+            "value",
+            "confidence"
+          ]
+        }
       },
-      "additionalProperties": false
+      "required": [
+        "one_liner",
+        "deck_date",
+        "sector",
+        "stage",
+        "location",
+        "founders",
+        "revenue",
+        "growth",
+        "users",
+        "round_size",
+        "valuation",
+        "customers",
+        "competitors",
+        "investors"
+      ]
+    },
+    "contradictions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "about": {
+            "type": "string",
+            "enum": [
+              "revenue",
+              "growth",
+              "users",
+              "customers",
+              "round_size",
+              "valuation",
+              "founders",
+              "market",
+              "metrics"
+            ],
+            "description": "which field the two figures belong to. Use metrics for operational numbers that are none of the others, such as a reduction in hospital visits or a conversion rate."
+          },
+          "quantity": {
+            "type": "string",
+            "description": "what both figures claim to measure, in the deck's own words"
+          },
+          "first": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string",
+                "description": "the figure as the deck writes it, e.g. '500,000 daily active users'"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "source_quote": {
+                "type": "string",
+                "description": "the exact words on that page, copied character for character"
+              }
+            },
+            "required": [
+              "text",
+              "page",
+              "source_quote"
+            ]
+          },
+          "second": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string",
+                "description": "the figure as the deck writes it, e.g. '500,000 daily active users'"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "source_quote": {
+                "type": "string",
+                "description": "the exact words on that page, copied character for character"
+              }
+            },
+            "required": [
+              "text",
+              "page",
+              "source_quote"
+            ]
+          },
+          "note": {
+            "type": "string",
+            "description": "one sentence naming both figures and where they sit, that a reader can put to the founder"
+          }
+        },
+        "required": [
+          "about",
+          "quantity",
+          "first",
+          "second",
+          "note"
+        ]
+      },
+      "description": "pairs of figures in THIS deck that cannot both be true. Empty list is the normal answer. See rule 7."
     }
   },
-  "definitions": {
-    "provenance": {
-      "type": "object",
-      "required": ["page", "source_quote"],
-      "properties": {
-        "page": { "type": "integer", "minimum": 1 },
-        "source_quote": {
-          "type": "string",
-          "description": "Verbatim text from that page. Must appear in the page text, character for character, or the eval marks the field hallucinated."
-        }
-      }
-    },
-    "field": {
-      "type": "object",
-      "required": ["value", "confidence"],
-      "properties": {
-        "value": { "type": ["string", "null"] },
-        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
-        "provenance": { "$ref": "#/definitions/provenance" }
-      }
-    },
-    "field_list": {
-      "type": "object",
-      "required": ["value", "confidence"],
-      "properties": {
-        "value": { "type": "array", "items": { "type": "string" } },
-        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
-        "provenance": { "$ref": "#/definitions/provenance" }
-      }
-    },
-    "metric": {
-      "type": "object",
-      "required": ["value", "confidence"],
-      "properties": {
-        "value":    { "type": ["number", "null"] },
-        "unit":     { "type": ["string", "null"], "description": "EUR, USD, percent, count" },
-        "period":   { "type": ["string", "null"], "description": "ARR, MRR, FY2025, QoQ" },
-        "as_of":    { "type": ["string", "null"], "description": "date or quarter the figure refers to" },
-        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
-        "provenance": { "$ref": "#/definitions/provenance" }
-      }
-    }
-  }
+  "required": [
+    "company",
+    "fields",
+    "contradictions"
+  ]
 }

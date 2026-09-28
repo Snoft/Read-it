@@ -1,8 +1,8 @@
-"""Turn a deck into pages of text, with images for the pages that have none.
+"""Turn a deck into pages: text where the PDF has a text layer, an image where it does not.
 
-Done for you. The one design decision worth knowing: a page whose text layer is
-almost empty is a graphic, so it is rasterised and sent to the model as an image
-instead. Most pitch decks are 60-80% graphics.
+A page whose text layer has fewer than TEXT_THRESHOLD characters is treated as a
+graphic, rasterised, and sent to the model as an image. In the eval set that is
+96 of 120 pages.
 """
 from dataclasses import dataclass, field
 from pathlib import Path

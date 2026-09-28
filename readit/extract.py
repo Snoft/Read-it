@@ -1,7 +1,12 @@
-"""Deck -> structured fields, every value carrying the sentence it came from.
+"""Deck -> structured fields, every value carrying the page and the words it came from.
 
-The API plumbing below is boilerplate. THE PROMPT IS THE PROJECT. It is the part
-you will be asked about, and the part that moves the eval numbers.
+One model call per deck. Text pages go in as text and graphic pages as images;
+the model answers by filling one tool, `record_extraction`, defined in TOOL
+below. Every value carries `page` and `source_quote`, and metrics carry a
+`status` of stated / redacted / absent. Calls are cached on disk (cache.py).
+
+Two things steer the result and both are part of the cache key: PROMPT, and the
+field descriptions inside TOOL. Editing either re-runs every deck.
 """
 import json
 
@@ -55,9 +60,9 @@ def client() -> Anthropic:
 
 
 # ---------------------------------------------------------------- the schema
-# Deliberately flat and inline rather than loaded from schema/extraction_schema.json:
-# the API wants one self-contained schema, and $ref indirection makes failures
-# much harder to read. Keep the two in step by hand; there are only twelve fields.
+# Inline rather than loaded from a file: the API takes one self-contained schema,
+# and $ref indirection makes validation errors much harder to read. This dict is
+# the source of truth; schema/extraction_schema.json is a copy written from it.
 
 def _prov():
     return {
@@ -199,13 +204,10 @@ TOOL = {
 }
 
 
-# ------------------------------------------------------------------ YOUR BIT
-# Everything above is scaffolding. This is the file's actual content.
-#
-# Improve it by reading eval failures, not by guessing. Run the eval, look at
-# what came out wrong, add one sentence aimed at that failure, run again.
-# Keep the versions you tried and what each changed: that history IS the
-# interview answer.
+# ---------------------------------------------------------------- the prompt
+# Rules for the model, most important first. The way to change them: run the
+# eval, read what came out wrong, change one rule, rerun, and keep the change
+# only if the numbers improve. Any edit here re-runs every deck.
 
 PROMPT = """You are reading a startup pitch deck for an investor who will check every number you report.
 

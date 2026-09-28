@@ -1,14 +1,14 @@
-"""What the deck does NOT say, and what it says without support.
+"""What the deck does not say, and what it says without support.
 
-Extraction is a commodity. "There is no revenue figure anywhere in 23 slides"
-is the sentence that saves a reader ten minutes, and this file produces it.
+    missing        a field an investor needs is absent from the deck
+    redacted       the deck has the figure but withholds it (from `status`)
+    unsupported    a claim with nothing underneath it; two narrow patterns only
+    contradiction  two figures in the deck that cannot both be true
 
-Contradiction detection was deliberately left out of the first version, because a
-false contradiction costs more trust than three missed ones. It is in now, but
-the caution stands: it is detected inside the extraction call, where the model
-already has every page, and the prompt spends more words on what is NOT a
-contradiction than on what is. Whether it cost extraction accuracy is a number in
-the README, not an opinion.
+Contradictions come back from the extraction call rather than from a second pass
+over the deck. The prompt rule for them is deliberately conservative, because a
+false contradiction costs a reader more trust than a missed one. The eval
+reports recall per kind, next to the flags the answer key does not ask for.
 """
 from dataclasses import dataclass
 
@@ -24,9 +24,9 @@ class Flag:
     severity: str    # low | medium | high
 
 
-# ---------------------------------------------------------------- YOUR CALL
-# Which absences actually matter, how loudly, and in what words.
-# This table is the opinion of the tool. Everything below it is plumbing.
+# ------------------------------------------------------------- what to flag
+# Which absences are flagged, how severely, and in what words. This table holds
+# the screening judgement; the functions below only apply it.
 #
 #   field: (severity, sentence shown when the deck never states it)
 
@@ -99,8 +99,9 @@ def _contradictions(extraction: dict) -> list[Flag]:
     over the deck. A second call would re-read the same pages and roughly double
     the cost of a screening, and the model that read page 5 is the one that
     should notice page 7 disagrees with it. The risk is that asking for one more
-    thing costs attention on the fields, which is why the README carries the
-    before-and-after accuracy and not just the new flag recall.
+    thing costs attention on the fields. Sonnet's field accuracy did not drop
+    (0.737 before, 0.789 after), but the same change also moved the call off
+    forced tool use, so the two effects are not separated.
     """
     out: list[Flag] = []
     for c in extraction.get("contradictions") or []:

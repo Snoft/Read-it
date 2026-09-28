@@ -1,4 +1,4 @@
-"""One page a human reads in ninety seconds. Done for you."""
+"""The screening memo as text: the numbers, the flags, questions for the founder, the score."""
 from readit.score import Score
 
 TEMPLATE = """# {company}
@@ -49,9 +49,8 @@ def _fmt_metric(name: str, f: dict) -> str:
     return f"- **{name}:** {_num(v)} {unit}{period}{as_of}{page}".replace("  ", " ").rstrip()
 
 
-# A flag says what is wrong with the deck. A question is what you put to a human
-# because of it. They are not the same sentence, and printing the first as the
-# second made the memo look like it had not thought about the reader.
+# A flag describes the deck; a question is what to put to the founder because
+# of it. They are different sentences, so each field maps to its own question.
 ASK = {
     "revenue":    "What is your current revenue, and as of when?",
     "round_size": "How much are you raising, and at what valuation?",
@@ -80,8 +79,8 @@ def _questions(flags: list, limit: int = 3) -> list[str]:
         if f.kind == "redacted":
             q = f"Can you share the unredacted {str(f.field).replace('_', ' ')} figure?"
         elif f.kind == "contradiction":
-            # The generic "how many users do you have" wastes the best question in
-            # the memo. Two numbers that disagree is the sharpest thing on the page.
+            # A contradiction gets a question naming both pages, not the generic
+            # question for its field: it is the one question specific to this deck.
             where = " and ".join(f"p{p}" for p in f.pages) if f.pages else "two slides"
             what = str(f.field or "the same figure").replace("_", " ")
             q = (f"The deck gives two different figures for {what} ({where}). "

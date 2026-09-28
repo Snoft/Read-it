@@ -1,4 +1,9 @@
-"""python -m readit.cli screen evals/decks/acme.pdf"""
+"""Screen one deck from the command line.
+
+    python -m readit.cli screen evals/decks/<deck>.pdf           # memo as text
+    python -m readit.cli screen evals/decks/<deck>.pdf --html    # memo as a page, out/<deck>.html
+    python -m readit.cli screen evals/decks/<deck>.pdf --json    # extraction, flags and score
+"""
 import argparse
 import json
 import sys

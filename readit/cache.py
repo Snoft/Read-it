@@ -1,16 +1,17 @@
-"""Disk cache for model calls, so iterating does not re-buy the same answer.
+"""Disk cache for model calls.
 
-Key it on everything that changes the result: the deck bytes, the model, and
-your prompt. Change the prompt and the key changes, so you get a fresh call
-without having to remember to clear anything.
+The key is a hash of every argument. An argument that is the path of an existing
+file is hashed by the file's bytes rather than its name, so a renamed deck still
+hits the cache and an edited one does not. Anything that changes the result has
+to be an argument for this to be correct, which is why extract._call takes the
+prompt and the serialised tool schema.
 
     from readit.cache import cached
 
     @cached
-    def _call(deck_path: str, model: str, prompt: str) -> dict:
-        ...the actual API call...
+    def _call(deck_path, model, prompt, tool_json, blocks_json) -> dict: ...
 
-Delete evals/.cache/ to force everything to re-run.
+Entries live in evals/.cache/ (gitignored). Delete the folder to re-run everything.
 """
 import functools
 import hashlib

@@ -1,10 +1,16 @@
-"""Scoring the screener, not the startup. This is the file the README table comes from.
+"""Scoring the screener against the reviewed labels. The README table comes from here.
 
-Three numbers, and the second is the one that will get you the interview:
+    field_accuracy      correct / fields the label says the deck states
+    hallucination_rate  quotes not found on their page / quotes that can be
+                        checked against a text layer (see quote_status)
+    quotes_verbatim     quotes found on the page exactly as written
+    flag_recall         expected flags the run produced, also broken down by kind
+    flags_not_in_key    flags produced that the key does not list; not the same
+                        as wrong, and meant to be read by hand
 
-    field_accuracy      right / (fields the label says are present)
-    hallucination_rate  fields with a value whose source_quote is NOT in the page
-    flag_recall         expected_flags the run actually produced
+Limits worth knowing: accuracy ignores fields the label marks absent, so a value
+filled in where the deck has none does not lower it; and quotes taken from
+image pages cannot be checked at all.
 """
 import unicodedata
 from dataclasses import dataclass, field as dc_field

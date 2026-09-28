@@ -1,7 +1,10 @@
-"""Thesis fit score. Done for you, and deliberately dull.
+"""Thesis fit score, always returned with its reasons.
 
-A score is only useful if the reasons come with it, so this returns both and the
-memo prints the reasons underneath. Weights live in thesis.yaml.
+Location, stage and sector are matched against the preferred and acceptable
+lists in thesis.yaml. Team and traction are judged from the flags instead,
+because an absence says more there than a match. Any high-severity flag halves
+the total. Fields the deck does not state are listed as unscored, not scored as
+zero. All weights live in thesis.yaml.
 """
 from dataclasses import dataclass, field as dc_field
 

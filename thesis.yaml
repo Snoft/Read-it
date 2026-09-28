@@ -1,7 +1,7 @@
 # Investment thesis Readit scores against.
 # Reconstructed from public information about an Austrian single family office
 # (evergreen holder, ~3-4 lead investments a year, strong Austria focus).
-# Edit freely
+# Changing this file is how the tool is pointed at a different mandate; no code changes needed.
 
 name: "Evergreen Austrian family office"
 

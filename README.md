@@ -51,8 +51,9 @@ Contradictions are found inside the extraction call, not in a second pass over
 the deck. The model that read page 5 is the one that should notice page 7
 disagrees with it, and a second call would re-read all the same pages for double
 the cost. The risk is that asking for one more thing costs attention on the
-fields themselves, so the table below carries field accuracy before and after,
-not only the flag recall that went up.
+fields themselves. Sonnet's field accuracy did not drop (0.737 before, 0.789
+after), but the same change also moved the call off forced tool use, so the two
+effects are not separated.
 
 To avoid false positives the whole pass is kept conservative rather than clever:
 a wrong flag costs more trust than three missed ones. The rule in the prompt

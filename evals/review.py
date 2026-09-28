@@ -1,10 +1,9 @@
-"""Read one deck's extraction next to its label, in a human format.
+"""One deck's extraction next to its label, field by field.
 
     python evals/review.py bryter          # compare against the label
-    python evals/review.py bryter --raw    # just show what came out
+    python evals/review.py bryter --raw    # the extraction only
 
-This is the iteration loop: run it, find one wrong field, change one sentence
-in PROMPT, run it again. Uses the cache, so repeats are free.
+Reads through the cache, so reviewing a deck that has already been run is free.
 """
 import argparse
 import json
